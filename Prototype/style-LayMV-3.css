@@ -1,0 +1,659 @@
+/* !important; */
+:root {
+  --fontsize: 15px;
+}
+
+
+.myLabelFirsScr { position: relative; }
+.myLabelFirsScr input { position: absolute; z-index: 2; opacity: 0; width: 100%; height: 100%; }
+.myLabelViewData { position: relative; }
+.myLabelViewData input { position: absolute; z-index: 2; opacity: 0; width: 100%; height: 100%; }
+.myLabelSeconScr { position: relative; }
+.myLabelSeconScr input { position: absolute; z-index: 2; opacity: 0; width: 100%; height: 100%; }
+/* #choosDataFile {color: black} */
+body{ margin: 0; padding: 0; background-color: grey;
+      box-shadow:0px 0px 10px 0px white inset; }
+button, p{ margin: 0; padding: 0;  font-size: var(--fontsize);}
+span{ margin: 0; padding: 0; color: green; position: relative; clear:both; }
+
+button{ color: #000; background-color: #aeb7b1; height: 22px ; }
+
+p { color:blue;}
+
+ul.drop-nav { list-style: none; padding: 0px; margin: 0px; box-shadow:0px 0px 0px 0px black inset;
+              position: absolute; clear:both; z-index: 1; top: 2px; font-size: var(--fontsize);
+              font-family: Arial; height:96%}
+ul.drop-nav ul { list-style: none; padding: 0px; margin: 0px; box-shadow:0px 0px 0px 0px black inset;
+                 position: absolute; clear:both; z-index: 1; top: 0px; font-size: var(--fontsize);
+                 font-family: Arial; height:96%; top: 100%}
+ul.drop-nav li { display: block; position: relative; float: left;}
+li ul { display: none;}
+ul.drop-nav li a { display: block; background: #c1c1c1; padding: 0px 5px 0px 5px;text-decoration: none;
+          white-space: nowrap; color: black;}
+ul.drop-nav li span { display: block; background: white; padding: 0px 5px 0px 5px;text-decoration: none;
+             white-space: nowrap; color: #fff;}
+ul.drop-nav li a:hover {    color: #ed7c36; }
+/* ul.drop-nav li span:hover { background: #f00; } */
+ul.drop-nav li:hover ul { display: block; position: absolute; }
+ul.drop-nav li:hover li { float: none; }
+ul.drop-nav li:hover a { background: white; }
+ul.drop-nav li:hover span { background: white; }
+/* ul.drop-nav li:hover li a:hover { background: #FFF5EB; }*/
+ul.drop-nav li:hover li span:hover { color: #ed7c36; }
+
+#openFileSpan:hover   { color: #ed7c36;  float: left; width:100%;}
+#openFileSpan   { color: red; background: black; both; z-index: 1; left: 1px; float: left; width:100%;}
+
+.myLabelFirsScr  { color: red; left: 1px;  float: left; width:100%;}
+.myLabelViewData  { color: red; left: 10px;  float: left; width:100%;}
+.myLabelSeconScr  { color: red; left: -10px;  ; width:115%;}
+
+#openFileA   { color: red; left: 1px; float: left; width:100%;}
+#firstScreen  { position: relative; background: #000000;}
+#secondScreen { box-shadow:0px 0px 10px 0px white inset; position: relative; background: #000000; display: none;}
+
+#openLayoutArea {  box-shadow:0px 0px 2px 0px grey inset; position: relative; background: #c1c1c1;}
+#newLayoutArea  {  position: relative; background: #f3f4f4;}
+
+#openLayoutFirsScr {  position: relative; background: #c1c1c1; color: black}
+#choosDataFile { position: relative; font-size: var(--fontsize); font-family: Arial; color: black}
+#openLayoutSeconScr {  position: relative; background: black; color: red}
+#drop-nav li ul li { border-top: 0px;}
+#grammarArea    { box-shadow:0px 0px 10px 0px #0a3d03 inset; position: relative; background: black; }
+#panelAreaBG    { position: relative; background: #ebe9e7; overflow:hidden; padding: 0; z-index: 1; }
+/* grey */
+#layoutApperance{ box-shadow:0px 0px 5px 0px black inset; position: relative; background: #c1c1c1;  overflow:hidden; padding: 0; z-index: 1; }
+#panelArea { position: relative; background: #ebe9e7; overflow:hidden; padding: 0; z-index: 1; }
+#panel     { position: relative; background: white; overflow:hidden; padding: 0; z-index: 1; } /* #cdf5bc */
+/* grey */
+#grammarTools { box-shadow:0px 0px 5px 0px black inset;  position: absolute; background: #c1c1c1; }
+/* #grammarStru { box-shadow:0px 0px 1px 0px white inset;  position: absolute; background: black; } */
+#tab { font-size: 6px; position: absolute; background: #c1c1c1; box-shadow:0px 0px 5px 0px black inset; }
+
+#quickFindArea   { background: #c1c1c1; }
+
+#editorVizsJson   { box-shadow:0px 0px 10px 0px #c1c1c1 inset; font-size: var(--fontsize); position: absolute; background: white; } /* #1b1c1d */
+#editorTechJson   { box-shadow:0px 0px 10px 0px #c1c1c1 inset; font-size: var(--fontsize); position: absolute; background: white; }
+
+#grammarEditor{  position: relative; box-shadow:0px 0px 10px 0px #c1c1c1 inset; font-size: var(--fontsize); color:black; background: white; }
+
+
+
+#vizDataPre{  position: relative; box-shadow:0px 0px 3px 0px black inset; font-size: var(--fontsize); color:black; background: white; }
+
+
+
+#vizDataDiv{  position: relative; box-shadow:0px 0px 10px 0px #c1c1c1 inset; font-size: 6px; color:black; background: white; }
+#vizTechDiv{  position: relative; box-shadow:0px 0px 10px 0px #c1c1c1 inset; font-size: 6px; color:black; background: white; }
+#tLayoutDiv2{  position: relative; box-shadow:0px 0px 10px 0px #c1c1c1 inset; font-size: 6px; color:black; background: white; }
+#jstreeDiv { box-shadow:0px 0px 5px 0px black inset; overflow-x: hidden; overflow-y: auto; margin-left: 0px; margin-right: 0px;
+             margin-top: 0px; margin-bottom: 0px; width:  calc(100% - 0px); height:  calc(25% - 0px) ; clear: none; float:left; background: white; font-size: var(--fontsize);}
+
+#layApperPart2 { box-shadow:0px 0px 20px 0px green inset; margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px;
+                 width:  calc(100% - 0px); height:  calc(75% - 0px) ; clear: none; float:left; border: 0.5px solid green;}
+
+
+#editor { display: block; padding: 6px 12px; /* border: 1px solid #ccc; */ border-top: none; }
+
+#tLayoutDiv { display: block; background: #c1c1c1; width:100%;  height:100%; box-shadow:0px 0px 5px 0px black inset;}
+#layoutappear { display: block; background: #c1c1c1; width:100%;  height:100%; box-shadow:0px 0px 5px 0px black inset;}
+#vizData { display: block; background: #c1c1c1; color: black; width:100%;  height:100%; box-shadow:0px 0px 5px 0px black inset;}
+#treeDataVizNumb { color: #ed7c36;}
+#treeVizTechNumb { color: #ed7c36;}
+#vizAppear { display: block; background: #c1c1c1; width:100%;  height:100%; box-shadow:0px 0px 5px 0px black inset;}
+
+#vizTech { position: absolute; display: block; background: #c1c1c1; width:100%;  height:100%; box-shadow:0px 0px 5px 0px black inset;  padding: 0px; margin: 0px; }
+#preEditorvizTech {  position: relative; box-shadow:0px 0px 10px 0px #c1c1c1 inset; font-size: 10px; color:black; background: white; }
+#editorvizTechJson   { top: 0px; position: absolute; box-shadow:0px 0px 3px 0px black inset; font-size: var(--fontsize);
+                       background: white; padding: 0px; margin: 0px; }
+#editorTLayout   { top: 0px; position: absolute; box-shadow:0px 0px 3px 0px black inset; font-size: var(--fontsize);
+                       background: white; padding: 0px; margin: 0px; }
+#preEditorTLayout {  position: relative; box-shadow:0px 0px 10px 0px #c1c1c1 inset; font-size: var(--fontsize); color:black; background: white; }
+.layout { box-shadow:0px 0px 0px 0px grey ; position: relative; z-index: 1; width: 80px; height: 80px;
+          background: white; margin-left: 40px; margin-bottom: 40px; float: left;}
+.menuDiv { box-shadow:0px 0px 5px 0px black inset; width: 100%;  height: 3.5%;
+            z-index:  1;  border: 0px solid #999999; position: relative; background: #c1c1c1; top: 0px; }
+.parent { box-shadow:0px 0px 10px 0px #0a3d03 inset; width: 100%;  height: calc(100% - 3.6%);
+          z-index:  0;  border: 0px solid #999999; position: relative; background: #0a3d03; top: calc(0.0% + 0px); }
+.clear{ clear:both; }
+.hline { border-top: thin dotted lightgrey; position: absolute; z-index: 1; }
+.vline { border-right: thin dotted lightgrey; position: absolute; z-index: 1; }
+
+/* #489b48 */
+
+.thumbnails {z-index: 3; box-shadow:0px 0px 0px 0px blue inset; border: 1.5px solid black; position: absolute;
+                 background: transparent; font-size: 1px ; padding: 1px; margin: 0px; }
+/* #ed7c36                  */
+/* #D27005 */
+.vis-container { width: 10%; height: 10%; z-index: 3;left: 1%; top: 1%; border: 1px solid black;
+                 box-shadow:0px 0px 5px 0px black inset; position: absolute;
+                 background: transparent; font-size: 6px ; padding: 1px; margin: 0px; font-weight: bold; }
+.vis-container div { text-align: right; font-size: 1px ; padding: 0px; margin: 0px; }
+
+.grammar-container { padding-left: 10px; padding-top: 10px; z-index: 1;  position: absolute; }
+/* .appearance { color:#0000ff; } */
+/* .grammarEditor { color:black; }
+.grammarEditor2 { color:black; } */
+/*   .tab { color:#0000ff; } */
+.contents { color:#0000ff; }
+.token { font-size: 70%; }
+.cont{ color:#992600; }
+.numberOfVizs{ color:#992600 }
+.token.hText{ color:green; }
+.token.text{ color:#992600; }
+.token.punctuation{color:#999}
+.token.property, .token.number{ color:#905; }
+.token.selector, .token.attr-name,{ color:#070; }
+.style { color:#a67f59; }
+.token.attr-value{ color:#07a }
+
+/* Style the tab */
+.tab { overflow: hidden; color:green; background-color: white; }
+/* Style the buttons inside the tab */
+.tab button { background-color: #c1c1c1;; float: left; border: none; outline: none; cursor: pointer;
+              padding: 0px 5px; transition: 0.3s; font-size: var(--fontsize); box-shadow:0px 0px 5px 0px black inset; }
+/* Change background color of buttons on hover */
+.tab button:hover { color: #ed7c36; }
+/* Create an active/current tablink class */
+.tab button.active { color: #ed7c36; background-color: white; box-shadow:0px 0px 5px 0px black inset;}
+.tab button { color: black; font-size: var(--fontsize); font-family: Arial; }
+/* Style the tab content */
+.tabcontent { display: none; padding: 4px 5px; /* border: 1px solid black; */ border-top: none;}
+
+/* .jstree-icon, .jstree-leaf, .jstree-ocl, .jstree-children,.li_attr, .treeAttr{ color: green; } */
+.treeLayout  { color: black; font-size: var(--fontsize);}
+.treeLayout>a:hover { color: black; background: #c1c1c1; }
+.tVis  { color: black;  }
+/* .tVis a:hover { background: #c1c1c1; } */
+.jstree-anchor.jstree-clicked  { background: #b5b1af; }
+.jstree-anchor.jstree-clicked:hover  { background: #b5b1af; }
+.tVisData, .tVisTech, .jstree-leaf, .jstree-anchor{ color: black; }
+.jstree-anchor:hover,.jstree-leaf a:hover, .tVisData a:hover, .tVisTech a:hover { color: #ed7c36; background: #c1c1c1; }
+.jstree-anchor:hover { color: black; background: #c1c1c1; }
+/* .jstree-anchor:hover,.jstree-leaf a:hover,  */
+/* switch style */
+.sliderName { position: relative; left: 35px; color: black; font-size: var(--fontsize); font-family: Arial; }
+.switch { position: relative; display: inline-block; width: 30px; height: 17px; left: 30px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: white; -webkit-transition: .4s; transition: .4s; }
+.slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 2px; bottom: 3px; background-color: grey; -webkit-transition: .4s; transition: .4s; }
+/* #ed7c36 */
+input:checked + .slider { background-color: #ed7c36; }
+input:focus + .slider { box-shadow: 0 0 3px white; }
+input:checked + .slider:before { -webkit-transform: translateX(15px); -ms-transform: translateX(15px); transform: translateX(15px); }
+/* Rounded sliders */
+.slider.round { box-shadow: 0 0 3px white; border-radius: 30px; }
+.slider.round:before { border-radius: 50%; }
+/* End switch style */
+.hljs { color: blue; }
+/* #visTasList, #viewTypList, #numofViewList{ position: relative; left: 20px; color: #2196F3; font-size: 12px; font-family: Arial; } */
+.visTasTit{position: relative; left: 30px; color: black; font-size: var(--fontsize); font-family: Arial; }
+#visTasList, #viewTypList, #numofViewList{ position: relative; left: 30px; color: #ed7c36; font-size: var(--fontsize); font-family: Arial; background: white; }
+#creatLayList { position: relative; left: 15px; color: #ed7c36; font-size: var(--fontsize); font-family: Arial; background: white; }
+#creatNewLayo { position: relative; left: 30px; color: black; font-size: var(--fontsize); font-family: Arial; }
+#updTexEdi { position: relative; left: 15px; color: black; var(--fontsize); font-family: Arial; }
+
+#resetLayout { position: relative; left: 15px; color: black; font-size: var(--fontsize); font-family: Arial; }
+#applyLayout { position: relative; left: 15px; color: black; font-size: var(--fontsize); font-family: Arial; }
+
+/* #resetAppear { position: relative; left: 15px; color: black; font-size: 12px; font-family: Arial; }
+#applyAppear { position: relative; left: 15px; color: black; font-size: 12px; font-family: Arial; } */
+#applyData { position: relative; color: black; font-size: var(--fontsize); font-family: Arial; }
+#erasedatafile{position: relative; font-size: var(--fontsize); font-family: Arial; color: black;}
+
+#applyTLayout { position: relative; color: black; font-size: var(--fontsize); font-family: Arial; }
+#resetTLayout{position: relative; font-size: var(--fontsize); font-family: Arial; color: black;}
+
+#applyTech { position: relative; color: black; font-size: var(--fontsize); font-family: Arial; }
+#resetTech{position: relative; font-size: var(--fontsize); font-family: Arial; color: black;}
+
+#creatLay{ position: relative; left: var(--fontsize); color: black; font-size: var(--fontsize); font-family: Arial; }
+#allLayouts{ color: #ed7c36; height: 60px;}
+#creaVisLab{ color: #7d7b79; position: relative; left: 10px; }
+#filtLayos{ color: #7d7b79; position: relative; left: 10px; }
+.categoriesLabel{ position: relative;  left: 10px;  color: grey; font-size: var(--fontsize); font-family: Arial; }
+.categories{ position: relative; padding : 10px; left: 20px; color: black; font-size: var(--fontsize); font-family: Arial; }
+
+.toolBar{ position: relative; padding: 10px; left: 280px; top: 4px; height: 50px; color: black; font-size: var(--fontsize); font-family: Arial; }
+.layoSize { position: relative; left: 30px; color: #ed7c36; font-size: var(--fontsize); font-family: Arial; width: 45px; background: white; }
+.layoSizeWH { position: relative; left: 31px; color: black; font-size: var(--fontsize); font-family: Arial; width: 40px; }
+
+#openLayoutFirsScrSpan{ font-size: var(--fontsize); font-family: Arial; left: 5px; color: black; background: #c1c1c1;}
+#choosdatafileSpan{ font-size: var(--fontsize); font-family: Arial; left: 10px; color: black;}
+
+#treeVizTechNumbP{ position: relative; font-size: var(--fontsize); font-family: Arial; top: 10px; left: 10px; color: black;}
+#treeTLayoutNumbP{ position: relative; font-size: var(--fontsize); font-family: Arial; top: 10px; left: 10px; color: black;}
+
+#openLayoutSeconScrSpan{ font-size: var(--fontsize); font-family: Arial; left: 5px; color: black; }
+/* width */
+::-webkit-scrollbar { width: 7px; }
+/* Track */
+::-webkit-scrollbar-track { box-shadow: inset 0 0 5px lightgrey; border-radius: 2px; }
+/* Handle */
+::-webkit-scrollbar-thumb { background: #b7b7b7e6; border-radius: 7px; }
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover { background: #8f8e8d; }
+
+/* CaseStudy2 */
+path {
+ stroke: black;
+}
+
+line {
+ stroke: black;
+}
+
+line#limit {
+ stroke: pink;
+ stroke-width: 3;
+ stroke-dasharray: 3 6;
+}
+
+.grid path {
+ stroke-width: 0;
+}
+
+.grid .tick line {
+ stroke: black;
+ stroke-opacity: 0.3;
+}
+/* End CaseStudy2 */
+
+@media screen and ( min-width: 350px ) {
+
+  #firstScreen {
+    padding: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width:  calc(100% - 0px);
+    height: calc(100% - 0px) ;
+    top: 0px;
+    clear: none;
+  }
+  #openLayoutArea {
+    padding: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width:  190px;
+    height: calc(100% - 0px) ;
+    top: 0px;
+    clear: none;
+    float: left;
+  }
+
+  #newLayoutArea {
+    padding: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width:  calc(100% - 190px);
+    height: calc(100% - 0px) ;
+    top: 0px;
+    clear: none;
+    float: right;
+    overflow: hidden ;
+  }
+  #newLayoutAreaCode {
+    background: white;
+    padding: var(--fontsize);
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width:  calc(100% - 0px);
+    height: calc(100% - 0px) ;
+    top: 0px;
+    clear: none;
+    float: right;
+    box-shadow:0px 0px 2px 0px grey inset;
+    overflow: auto ;
+  }
+
+  #openLayoutFirsScr {
+    top: 20px;
+    left: 25px;
+    width:  90px;
+  }
+  #choosDataFile {
+    top: 10px;
+    left: 10px;
+    /* width:  40px; */
+  }
+
+  #secondScreen {
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width:  calc(100% - 0px);
+    height: calc(100% - 0px) ;
+    top: 0px;
+    clear: none;
+  }
+
+  #grammarArea {
+    margin-left: 1px;
+    margin-right: 0.5px;
+    margin-top: 0.5px;
+    margin-bottom: 0.5px;
+    width:  calc(20% - 1.5px);
+    height:  calc(100% - 1px) ;
+    left: 0px;
+    clear: none;
+    float:left;
+  }
+  #panelAreaBG {
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0.5px;
+    margin-bottom: 0.5px;
+    width:  calc(60% - 0px);
+    height:  calc(100% - 1px) ;
+    left:  calc(0% + 0px);
+  }
+
+  #layoutApperance {
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width:  calc(20% - 0px);
+    height:  calc(100% - 0px) ;
+    clear: none;
+    float:right;
+  }
+  #jstreeDiv {
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
+    width:  calc(100% - 0px);
+    height:  calc(25% - 0px) ;
+    clear: none;
+    float:left;
+    font-size: var(--fontsize);
+  }
+  #layApperPart2 {
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width:  calc(100% - 0px);
+    height:  calc(75% - 0px) ;
+    clear: none;
+    float:right;
+  }
+
+  #panelArea{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    height:  100% ;
+    width:  68%;
+    clear: none;
+    float:left;
+  }
+  #panel {
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width:  100%;
+    height:  100%;
+    clear: none;
+    /* float:center; */
+  }
+
+  #grammarTools {
+    margin-left: 0.5px;
+    margin-right: 0.5px;
+    margin-top: 0.5px;
+    margin-bottom: 0.5px;
+    width:  calc(100% - 1px);
+    height:  calc(15% - 1px) ;
+  }
+
+  #tab{
+    margin-left: 0.5px;
+    margin-right: 0.5px;
+    margin-top: 0.5px;
+    margin-bottom: 1px;
+    padding-top: 0px;
+    width: calc(100% - 1px);
+    height: calc(85% - 1.5px);
+    top: calc(15% + 0px);
+  }
+
+  #editorVizsJson{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    background: white;
+    width: calc(100% - 0px);
+    height: calc(98% - 0px);
+    top: calc(2.5% + 0px);
+    left: calc(0% + 0px);
+    font-size: var(--fontsize);
+  }
+  #editorTechJson{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    background: white;
+    width: calc(100% - 0px);
+    height: calc(98% - 0px);
+    top: calc(2.5% + 0px);
+    left: calc(0% + 0px);
+    font-size: var(--fontsize);
+  }
+
+  /* #editorvizTechJson{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    background: black;
+    top:  calc(50% - 0px);
+    width: calc(100% - 0px);
+    height: calc(100% - 0px);
+    top: calc(0% + 0px);
+    left: calc(0% + 0px);
+    font-size: 10px;
+  } */
+
+  #grammarEditor{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    width: calc(100% - 0px);
+    height: calc(98% - 0px);
+    top: calc(2.5% + 0px);
+    left: calc(0% + 0px);
+    font-size: var(--fontsize);
+  }
+  #vizDataDiv{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    width: calc(100% - 8px);
+    height: calc(87% - 0px);
+    top: 13px;
+    left: 4px;
+    font-size: 10px;
+  }
+
+  #vizDataPre{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    width: calc(100% - 0px);
+    height: calc(100% - 0px);
+    /* top: calc(3% + 0px); */
+    left: 0px;
+    font-size: var(--fontsize);
+  }
+  #tLayoutDiv2{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    width: calc(100% - 8px);
+    height: calc(87% - 0px);
+    top: 13px;
+    left: 4px;
+    font-size: 10px;
+  }
+  #preEditorTLayout{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    width: calc(100% - 0px);
+    height: calc(100% - 0px);
+    /* top: 13px; */
+    left: 0px;
+    font-size: var(--fontsize);
+  }
+  #editorTLayout{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    width: calc(100% - 0px);
+    height: calc(100% - 0px);
+    /* top: calc(3% + 0px); */
+    left: 0px;
+    font-size: var(--fontsize);
+  }
+
+  #vizTechDiv{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    width: calc(100% - 8px);
+    height: calc(65.5% - 0px);
+    top: 13px;
+    left: 4px;
+    font-size: 10px;
+  }
+
+  #preEditorvizTech{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    width: calc(100% - 0px);
+    height: calc(100% - 0px);
+    /* top: 13px; */
+    left: 0px;
+    font-size: var(--fontsize);
+  }
+
+  #editorvizTechJson{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    width: calc(100% - 0px);
+    height: calc(100% - 0px);
+    /* top: calc(3% + 0px); */
+    left: 0px;
+    font-size: var(--fontsize);
+  }
+
+}
+
+@media screen and (max-width: 350px) {
+  #firstScreen {
+    padding: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width:  calc(100% - 0px);
+    height: calc(100% - 0px) ;
+    top: 0px;
+    clear: none;
+  }
+
+  #openLayoutArea {
+    padding: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width:  100%;
+    height: 405px;
+    top: 0px;
+    clear: none;
+    float: left;
+  }
+
+  #newLayoutArea {
+    padding: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width:  100%;
+    height: calc(100% - 275px) ;
+    top: 0px;
+    clear: none;
+    float: right;
+    overflow: hidden ;
+  }
+
+  #newLayoutAreaCode {
+    background: white;
+    padding: var(--fontsize);
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width:  calc(100% - 0px);
+    height: calc(100% - 0px) ;
+    top: 0px;
+    clear: none;
+    float: right;
+    box-shadow:0px 0px 5px 0px white inset;
+    overflow: auto ;
+  }
+
+  #openLayoutFirsScr {
+    top: 30px;
+    left: 15px;
+    width:  82px;
+  }
+
+  #choosdatafile {
+    top: 10px;
+    left: 10px;
+    /* width:  40px; */
+  }
+
+}

@@ -1,0 +1,341 @@
+layoutEditor{
+   "numOfVizs": 6,
+   "fixedLayout": "no",
+   "laySize": {
+      "height": "100%",
+      "width": "100%"
+   },
+   "layout": {
+      "id": [
+         "viz1",
+         "viz2",
+         "viz3",
+         "viz4",
+         "viz5"
+      ],
+      "pos": [
+         {
+            "x": "0%",
+            "y": "0%"
+         },
+         {
+            "x": "0%",
+            "y": "33.33%"
+         },
+         {
+            "x": "0%",
+            "y": "66.67%"
+         },
+         {
+            "x": "50%",
+            "y": "0%"
+         },
+         {
+            "x": "50%",
+            "y": "33.33%"
+         },
+         {
+            "x": "50%",
+            "y": "66.67%"
+         }
+      ],
+      "size": [
+         {
+            "w": "50%",
+            "h": "33.33%"
+         },
+         {
+            "w": "50%",
+            "h": "33.34%"
+         },
+         {
+            "w": "50%",
+            "h": "33.33%"
+         },
+         {
+            "w": "50%",
+            "h": "33.33%"
+         },
+         {
+            "w": "50%",
+            "h": "33.34%"
+         },
+         {
+            "w": "50%",
+            "h": "33.33%"
+         }
+      ],
+      "data": [
+         "data1"
+      ],
+      "vizTech": [
+         "Barchart1",
+         "Barchart2",
+         "Barchart3",
+         "Barchart4",
+         "Barchart5",
+         "Barchart6"
+      ],
+      "vizBGColor": [
+         "transparent",
+         "transparent",
+         "transparent",
+         "transparent",
+         "transparent",
+         "transparent"
+      ]
+   },
+   "backgroundColor": "white"
+}layoutAppearance{
+   "apperance": {
+      "backgroundColor": "white",
+      "horizontalLine": "yes",
+      "verticalLine": "yes",
+      "border": "0px solid  black",
+      "boxShadow": "0px 0px 0px 0px black inset",
+      "padding": "0px 0px 0px 0px"
+   }
+}visualisation{
+   "visual": [
+      {
+         "visType": "barchart1",
+         "caption": {
+            "x": 10,
+            "y": 12,
+            "text": "Titles",
+            "size": 17,
+            "color": "black"
+         },
+         "xAxis": {
+            "textSize": "7px",
+            "textRotate": 0,
+            "titale": "Xaxis titale",
+            "titleSize": "10px",
+            "titleColor": "black"
+         },
+         "yAxis": {
+            "textSize": "10px",
+            "textRotate": 0,
+            "titale": "Yaxis titale",
+            "titleSize": "15px",
+            "titleColor": "black"
+         },
+         "bar": {
+            "barcolor": "red",
+            "addBarTitles": "yes",
+            "barTitlesColor": "black",
+            "barTitlesSize": "7px",
+            "addInteract": "yes",
+            "interactColor": "blue"
+         },
+         "appear": {
+            "verticalGridLines": "yes",
+            "horizontalGridLines": "yes",
+            "background": "white",
+            "border": "0px groove green",
+            "boxShadow": "0px 0px 5px 0px #ed7c36 inset",
+            "margin": 60
+         }
+      },
+      {
+         "visType": "barchart2",
+         "caption": {
+            "x": 10,
+            "y": 10,
+            "text": "Titles",
+            "size": 17,
+            "color": "black"
+         },
+         "xAxis": {
+            "textSize": "7px",
+            "textRotate": 0,
+            "titale": "Xaxis titale",
+            "titleSize": "10px",
+            "titleColor": "black"
+         },
+         "yAxis": {
+            "textSize": "10px",
+            "textRotate": 0,
+            "titale": "Yaxis titale",
+            "titleSize": "15px",
+            "titleColor": "black"
+         },
+         "bar": {
+            "barcolor": "red",
+            "addBarTitles": "yes",
+            "barTitlesColor": "black",
+            "barTitlesSize": "7px",
+            "addInteract": "yes",
+            "interactColor": "blue"
+         },
+         "appear": {
+            "verticalGridLines": "yes",
+            "horizontalGridLines": "yes",
+            "background": "white",
+            "border": "0px groove green",
+            "boxShadow": "0px 0px 5px 0px #D27005 inset",
+            "margin": 40
+         }
+      },
+      {
+         "visType": "barchart3",
+         "caption": {
+            "x": 10,
+            "y": 10,
+            "text": "Titles",
+            "size": 17,
+            "color": "black"
+         },
+         "xAxis": {
+            "textSize": "7px",
+            "textRotate": 0,
+            "titale": "Xaxis titale",
+            "titleSize": "10px",
+            "titleColor": "black"
+         },
+         "yAxis": {
+            "textSize": "10px",
+            "textRotate": 0,
+            "titale": "Yaxis titale",
+            "titleSize": "15px",
+            "titleColor": "black"
+         },
+         "bar": {
+            "barcolor": "red",
+            "addBarTitles": "yes",
+            "barTitlesColor": "black",
+            "barTitlesSize": "7px",
+            "addInteract": "yes",
+            "interactColor": "blue"
+         },
+         "appear": {
+            "verticalGridLines": "yes",
+            "horizontalGridLines": "yes",
+            "background": "white",
+            "border": "0px groove green",
+            "boxShadow": "0px 0px 5px 0px #D27005 inset",
+            "margin": 40
+         }
+      },
+      {
+         "visType": "barchart4",
+         "caption": {
+            "x": 10,
+            "y": 10,
+            "text": "Titles",
+            "size": 17,
+            "color": "black"
+         },
+         "xAxis": {
+            "textSize": "7px",
+            "textRotate": 0,
+            "titale": "Xaxis titale",
+            "titleSize": "10px",
+            "titleColor": "black"
+         },
+         "yAxis": {
+            "textSize": "10px",
+            "textRotate": 0,
+            "titale": "Yaxis titale",
+            "titleSize": "15px",
+            "titleColor": "black"
+         },
+         "bar": {
+            "barcolor": "red",
+            "addBarTitles": "yes",
+            "barTitlesColor": "black",
+            "barTitlesSize": "7px",
+            "addInteract": "yes",
+            "interactColor": "blue"
+         },
+         "appear": {
+            "verticalGridLines": "yes",
+            "horizontalGridLines": "yes",
+            "background": "white",
+            "border": "0px groove green",
+            "boxShadow": "0px 0px 5px 0px #D27005 inset",
+            "margin": 40
+         }
+      },
+      {
+         "visType": "barchart5",
+         "caption": {
+            "x": 10,
+            "y": 10,
+            "text": "Titles",
+            "size": 17,
+            "color": "black"
+         },
+         "xAxis": {
+            "textSize": "7px",
+            "textRotate": 0,
+            "titale": "Xaxis titale",
+            "titleSize": "10px",
+            "titleColor": "black"
+         },
+         "yAxis": {
+            "textSize": "10px",
+            "textRotate": 0,
+            "titale": "Yaxis titale",
+            "titleSize": "15px",
+            "titleColor": "black"
+         },
+         "bar": {
+            "barcolor": "red",
+            "addBarTitles": "yes",
+            "barTitlesColor": "black",
+            "barTitlesSize": "7px",
+            "addInteract": "yes",
+            "interactColor": "blue"
+         },
+         "appear": {
+            "verticalGridLines": "yes",
+            "horizontalGridLines": "yes",
+            "background": "white",
+            "border": "0px groove green",
+            "boxShadow": "0px 0px 5px 0px #D27005 inset",
+            "margin": 40
+         }
+      },
+      {
+         "visType": "barchart6",
+         "caption": {
+            "x": 10,
+            "y": 10,
+            "text": "Titles",
+            "size": 17,
+            "color": "black"
+         },
+         "xAxis": {
+            "textSize": "7px",
+            "textRotate": 0,
+            "titale": "Xaxis titale",
+            "titleSize": "10px",
+            "titleColor": "black"
+         },
+         "yAxis": {
+            "textSize": "10px",
+            "textRotate": 0,
+            "titale": "Yaxis titale",
+            "titleSize": "15px",
+            "titleColor": "black"
+         },
+         "bar": {
+            "barcolor": "red",
+            "addBarTitles": "yes",
+            "barTitlesColor": "black",
+            "barTitlesSize": "7px",
+            "addInteract": "yes",
+            "interactColor": "blue"
+         },
+         "appear": {
+            "verticalGridLines": "yes",
+            "horizontalGridLines": "yes",
+            "background": "white",
+            "border": "0px groove green",
+            "boxShadow": "0px 0px 5px 0px #D27005 inset",
+            "margin": 40
+         }
+      }
+   ]
+}

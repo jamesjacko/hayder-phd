@@ -1,0 +1,4396 @@
+<!DOCTYPE html>
+<html>
+<!-- Give  the  users  the control  to  change  the  layout  to  improving  the display of the visualisation. -->
+<head>
+ <title> LayMV Tool </title>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+ <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.css">
+ <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+ <script src="https://d3js.org/d3.v5.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.8.9/jquery.csv.js"></script>
+ <link rel="stylesheet" href="style.min.css" type="text/css">
+ <link rel="stylesheet" href="style-LayMV-2.css" type="text/css">
+
+ <script type="text/javascript">
+   function addLines(){ // Add vertical and horizontal lines to the panelArea
+     // var hLines = $('.hline');
+     // var hLinesNum = hLines.size();
+     // for (var i = 0; i < hLinesNum; i++)  {
+     //    hLines[i].remove();
+     // }
+     // var vLines = $('.vline');
+     // var vLinesNum = vLines.size();
+     // for (var i = 0; i < vLinesNum; i++)  {
+     //    vLines[i].remove();
+     // }
+     // var $cont = $('#panel');
+     // var cWidth= $cont.width();
+     // var cheight = $cont.height();
+     // var sV= cWidth / 100 ;
+     // var sH= cheight / 100 ;
+     // var v = parseInt(cWidth / sV);
+     // var h= parseInt( cheight / sH);
+     // var hW= cWidth;
+     // var vL = cheight;
+     // var hTop= sH;
+     // var hLeft= 0;
+     // var vTop= 0;
+     // var vLeft= sV;
+     // for (var i = 1; i <= h; i++) {
+     //    $("#panel").append('<div class="hline" style="height:0px; width:'+hW+'px; top:'+hTop+'px ; left:0px" id="div"></div>');
+     //    if ( (i%10 == 0) && (i%20 != 0) && (i != 50) ) {
+     //      $("#div").css('border', "thin dotted grey")
+     //    } else if ( (i%20 == 0) && (i != 50) ) {
+     //      $("#div").css('border', "thin dashed black")
+     //    }  else if (i == 50)  {
+     //      $("#div").css('border', "thin dashed black")
+     //      $("#div").css('border-color', "blue")
+     //    }
+     //    var id = "h";
+     //    $("#div").attr('id', id + i);
+     //    hTop+= sH;
+     // }
+     // for (var i = 1; i <= v; i++) {
+     //    $("#panel").append('<div class="vline" style="height:'+vL+'px; width:0px; top:0px ; left:'+vLeft+'px" id="div"></div>');
+     //    if ( (i%10 == 0) && (i%20 != 0) && (i != 50) ) {
+     //      $("#div").css('border', "thin dotted grey")
+     //    } else if ( (i%20 == 0)  && (i != 50) ) {
+     //      $("#div").css('border', "thin dashed black")
+     //    }  else if (i == 50)  {
+     //      $("#div").css('border', "thin dashed black")
+     //      $("#div").css('border-color', "blue")
+     //    }
+     //    var id = "v";
+     //    $("#div").attr('id', id + i);
+     //    vLeft+= sV;
+     // }
+   }
+   function updateTexEdi(){ //Update TextEditor
+     var layoutJSON = $('#editorVizsJson').text();
+     var layoutObj = JSON.parse(layoutJSON);
+     var contents = $('.vis-container');
+     var vizsNumber = contents.size();
+     var visId="";
+     var visW="";
+     var visH="";
+     var visL="";
+     var visT="";
+     layoutObj.numOfVizs =vizsNumber;
+     $('#editorVizsJson').text("");
+     layoutObj.layout= {};
+     var newVizs = {};
+     newVizs.id=[];
+     for (var i = 0; i < vizsNumber; i++)  {
+       newVizs.id[i] = contents[i].id;
+     }
+     newVizs.pos=[];
+     for (var i = 0; i < vizsNumber; i++)  {
+       id = "#" + contents[i].id;
+       visL= $(id).prop("style").left;
+       visT= $(id).prop("style").top;
+       newVizs.pos[i] = {x: visL, y: visT};
+     }
+     newVizs.size=[];
+     for (var i = 0; i < vizsNumber; i++)  {
+       id = "#" + contents[i].id;
+       visW= $(id).prop("style").width;
+       visH= $(id).prop("style").height;
+       newVizs.size[i] = {w: visW, h: visH};
+     }
+     newVizs.data=[];
+     for (var i = 0; i < vizsNumber; i++)  {
+       newVizs.data[i] = "data"+(i+1);
+     }
+     newVizs.vizTech=[];
+     for (var i = 0; i < vizsNumber; i++)  {
+       newVizs.vizTech[i] = "Barchart"+(i+1);
+     }
+     newVizs.vizBGColor=[];
+     for (var i = 0; i < vizsNumber; i++)  {
+       newVizs.vizBGColor[i] = "transparent";
+     }
+     layoutObj.layout= newVizs;
+     $('#editorVizsJson').text(JSON.stringify(layoutObj, null, 3));
+     $('#editorVizsJson').each(function(i, block) {
+        hljs.highlightBlock(block);
+     });
+   }
+   function loadVizsFromTexEdi(){ //Load Vizs to panelArea from TextEditor
+     tNewVizIndex= 0;
+     var nodeID = $("#tLayComp");
+     var children = $("#jstree").jstree(true).get_node(nodeID).children;
+     $("#jstree").jstree(true).delete_node(children);
+
+     var mCounter=0;
+     var maxCounter=0;
+     var layoutJSON = $('#editorVizsJson').text();
+     var layoutObj = JSON.parse(layoutJSON);
+     $('#panel').html("");
+     addLines();
+     $('#panel').css('background', layoutObj.backgroundColor);
+     var vis = layoutObj.layout;
+     var currentX = "0%";
+     var currentY = "0%";
+     var currentW = "0%";
+     var currentH = "0%";
+     var currentN = 0;
+     var lenOfPos= layoutObj.layout.pos.length;
+     var nPosIsThere = false;
+     var posIndex = 0;
+     var n = 0;
+     var lenOfSize= layoutObj.layout.size.length;
+     var nSizeIsThere = false;
+     var sizeIndex = 0;
+     var s = 0;
+     var x = 0;
+     var y = 0;
+     var w = 0;
+     var h = 0;
+     var LenOfId= layoutObj.layout.id.length;
+     $("#panel").css('height', layoutObj.laySize.height);
+     $("#panel").css('width', layoutObj.laySize.width);
+     setPanelAreaSize();
+     for (var i = 0; i < LenOfId; i++) {
+         var divII = document.createElement('div');
+         if ( ( posIndex < lenOfPos) && ( lenOfPos> 0 ) ) {
+           nPosIsThere = (vis.pos[posIndex].n)? true : false;
+           if (n==0 && nPosIsThere==true) {
+             n = (vis.pos[posIndex].n)? vis.pos[posIndex].n : n;
+           }
+           if ( nPosIsThere==true && n>0) {
+             n = n- 1;
+             currentX = (vis.pos[posIndex].x)? vis.pos[posIndex].x : currentX;
+             currentY = (vis.pos[posIndex].y)? vis.pos[posIndex].y : currentY;
+             if (n==0) {
+                posIndex += 1;
+             }
+           } else if ( nPosIsThere==true && n<=0) {
+             n = 0;
+             currentX = (vis.pos[posIndex].x)? vis.pos[posIndex].x : currentX;
+             currentY = (vis.pos[posIndex].y)? vis.pos[posIndex].y : currentY;
+             posIndex += 1;
+           } else if ( nPosIsThere==false && n>0) {
+             n = n- 1;
+             currentX = currentX;
+             currentY = currentY;
+           } else if ( nPosIsThere==false && n==0) {
+             currentX = (vis.pos[posIndex].x)? vis.pos[posIndex].x : currentX;
+             currentY = (vis.pos[posIndex].y)? vis.pos[posIndex].y : currentY;
+             posIndex += 1;
+           } else {
+             currentX = currentX;
+             currentY = currentY;
+           }
+         } else {
+           currentX = currentX;
+           currentY = currentY;
+         }
+         if ( ( sizeIndex < lenOfSize) && ( lenOfSize> 0 ) ) {
+           nSizeIsThere = (vis.size[sizeIndex].n)? true : false;
+           if (s==0 && nSizeIsThere==true) {
+             s = (vis.size[sizeIndex].n)? vis.size[sizeIndex].n : s;
+           }
+           if ( nSizeIsThere==true && s>0) {
+             s = s - 1;
+             currentW = (vis.size[sizeIndex].w)? vis.size[sizeIndex].w : currentW;
+             currentH = (vis.size[sizeIndex].h)? vis.size[sizeIndex].h : currentH;
+             if (s==0) {
+              sizeIndex += 1;
+             }
+           } else if ( nSizeIsThere==true && s<=0) {
+             s = 0;
+             currentW = (vis.size[sizeIndex].w)? vis.size[sizeIndex].w : currentW;
+             currentH = (vis.size[sizeIndex].h)? vis.size[sizeIndex].h : currentH;
+             sizeIndex += 1;
+           } else if ( nSizeIsThere==false && s>0) {
+             s = s - 1;
+             currentW = currentW;
+             currentH = currentH;
+           } else if ( nSizeIsThere==false && s==0) {
+             currentW = (vis.size[sizeIndex].w)? vis.size[sizeIndex].w : currentW;
+             currentH = (vis.size[sizeIndex].h)? vis.size[sizeIndex].h : currentH;
+             sizeIndex += 1;
+           } else {
+             currentW = currentW;
+             currentH = currentH;
+           }
+         } else {
+           currentW = currentW;
+           currentH = currentH;
+         }
+
+         while (currentX.search("%") != -1) {
+           currentX = currentX.replace("%", "");
+         }
+         while (currentY.search("%") != -1) {
+           currentY = currentY.replace("%", "");
+         }
+         while (currentW.search("%") != -1) {
+           currentW = currentW.replace("%", "");
+         }
+         while (currentH.search("%") != -1) {
+           currentH = currentH.replace("%", "");
+         }
+         x = eval(currentX);
+         y = eval(currentY);
+         w = eval(currentW);
+         h = eval(currentH);
+         $(divII).css({
+             'left': x + "%",
+             'top': y + "%",
+             'width': w + "%",
+             'height': h + "%",
+             'background': vis.vizBGColor[i],
+             'position': "absolute"
+         });
+         divII.innerHTML = vis.id[i];
+         divII.id = vis.id[i];
+         divII.className += " vis-container";
+         addNewVizFromTexEdi(divII, divII.id);
+         creatNod();
+         $('#editorVizsJson').text(JSON.stringify(layoutObj, null, 3));
+         $('#editorVizsJson').each(function(i, block) {
+            hljs.highlightBlock(block);
+         });
+         maxCounter= findMaxCounterNum(maxCounter, counterById(divII.id));
+     }
+
+
+     counter= maxCounter;
+   }
+   function findMaxCounterNum(maxCoun, idNumb) {
+      if (maxCoun < idNumb) {
+        maxCoun = idNumb;
+      }
+      return maxCoun;
+   }
+   function counterById(str) {
+      var idCounter="";
+      for(var i = 3; i < str.length; i++){
+        idCounter+= str[i]
+      }
+      return parseInt(idCounter);
+   }
+   function addNewVizFromTexEdi(divII, id) { // add New Viz to panelArea From TexEdi
+      $('#panel').append(divII);
+      counter= counterById(id);
+      var divId2="#"+id;
+      var $el = $(divId2);
+      var pos = $el.position();
+      $(divId2).css({
+         width: ($(divId2).outerWidth(false) / $("#panel").outerWidth(false)) * 100 + '%',
+         height: $(divId2).outerHeight(false) / $("#panel").outerHeight(false) * 100 + '%',
+         left: pos.left / $("#panel").outerWidth(false) * 100 + '%',
+         top:  pos.top / $("#panel").outerHeight(false) * 100 + '%'
+      });
+
+      if (fixedLayoutStatus == false) {
+        $( divId2 ).draggable({
+           stop: function() {
+              var $el = $(divId2);
+              var pos = $el.position();
+              if (pos.left < 0) {
+                pos.left= 0;
+              }
+              if (pos.top < 0) {
+                pos.top= 0;
+              }
+              var widthStep= $("#panel").outerWidth(false) / 100;
+              var heightStep= $("#panel").outerHeight(false) / 100;
+              $(divId2).css({
+                  left: ( (Math.round(pos.left / widthStep) * widthStep) / $("#panel").outerWidth(false) )  * 100 + '%',
+                  top: ( (Math.round(pos.top / heightStep) * heightStep) / $("#panel").outerHeight(false) )  * 100 + '%',
+              });
+           }
+       });
+       $(divId2).resizable({
+         handles: "n, e, s, w, ne, nw, se, sw",
+         stop: function() {
+           var $el = $(divId2);
+           var pos = $el.position();
+           var widthStep= $("#panel").outerWidth(false) / 100;
+           var heightStep= $("#panel").outerHeight(false) / 100;
+           $(divId2).css({
+              width: ( (Math.round($(divId2).outerWidth(false) / widthStep) * widthStep) / $("#panel").outerWidth(false)) * 100 + '%',
+              height: ( (Math.round($(divId2).outerHeight(false) / heightStep) * heightStep) / $("#panel").outerHeight(false)) * 100 + '%',
+              height: $(divId2).outerHeight(false) / $("#panel").outerHeight(false) * 100 + '%',
+              left: ( (Math.round(pos.left / widthStep) * widthStep) / $("#panel").outerWidth(false) )  * 100 + '%',
+              top: ( (Math.round(pos.top / heightStep) * heightStep) / $("#panel").outerHeight(false) )  * 100 + '%',
+           });
+           $(divId2).css({ zIndex: '3' });
+           $(divId2).css({boxShadow:"0px 0px 5px 0px #ed7c36 inset"});
+         }
+       });
+      }
+
+      $(divId2).on('mousedown', function() {
+        $(divId2).css({ zIndex: '4'});
+        $(divId2).css({boxShadow:"0px 0px 5px 0px #ed7c36"});
+      });
+      $(divId2).on('mouseup', function() {
+        $(divId2).css({ zIndex: '3' });
+        $(divId2).css({boxShadow:"0px 0px 5px 0px #ed7c36 inset"});
+      });
+   }
+   function addNewViz(){ // Add new Viz to the layout iiiiiii
+      counter+= 1;       // (This function called after pressing Add-Vis button )
+      var percentage = '10%';
+      $("#panel").append('<div class="vis-container" style="height:'+percentage+'; width:'+percentage+'; top:1%; left:1% " id="div"></div>');
+
+      var id = "viz";
+      $("#div").attr('id', id + counter);
+      var divId2="#"+id+counter ;
+
+      if (fixedLayoutStatus == false) {
+        $( divId2 ).draggable({
+           stop: function() {
+              var $el = $(divId2);
+              var pos = $el.position();
+              if (pos.left < 0) {
+                pos.left= 0;
+              }
+              if (pos.top < 0) {
+                pos.top= 0;
+              }
+              var widthStep= $("#panel").outerWidth(false) / 100;
+              var heightStep= $("#panel").outerHeight(false) / 100;
+              $(divId2).css({
+                  left: ( (Math.round(pos.left / widthStep) * widthStep) / $("#panel").outerWidth(false) )  * 100 + '%',
+                  top: ( (Math.round(pos.top / heightStep) * heightStep) / $("#panel").outerHeight(false) )  * 100 + '%',
+              });
+           }
+       });
+       $(divId2).resizable({
+         handles: "n, e, s, w, ne, nw, se, sw",
+         stop: function() {
+           var $el = $(divId2);
+           var pos = $el.position();
+           var widthStep= $("#panel").outerWidth(false) / 100;
+           var heightStep= $("#panel").outerHeight(false) / 100;
+           $(divId2).css({
+              width: ( (Math.round($(divId2).outerWidth(false) / widthStep) * widthStep) / $("#panel").outerWidth(false)) * 100 + '%',
+              height: ( (Math.round($(divId2).outerHeight(false) / heightStep) * heightStep) / $("#panel").outerHeight(false)) * 100 + '%',
+              height: $(divId2).outerHeight(false) / $("#panel").outerHeight(false) * 100 + '%',
+              left: ( (Math.round(pos.left / widthStep) * widthStep) / $("#panel").outerWidth(false) )  * 100 + '%',
+              top: ( (Math.round(pos.top / heightStep) * heightStep) / $("#panel").outerHeight(false) )  * 100 + '%',
+           });
+           $(divId2).css({ zIndex: '3' });
+           $(divId2).css({boxShadow:"0px 0px 5px 0px #D27005 inset"});
+         }
+       });
+      }
+
+
+      $(divId2).on('mousedown', function() {
+          $(divId2).css({ zIndex: '4'});
+          $(divId2).css({boxShadow:"0px 0px 5px 0px #D27005"});
+      });
+      $(divId2).on('mouseup', function() {
+          $(divId2).css({ zIndex: '3' });
+          $(divId2).css({boxShadow:"0px 0px 5px 0px #D27005 inset"});
+      });
+      describeViz();
+   }
+   function describeViz(){ //describe the number Viz(s) in panelArea
+      var maxCounter=0;
+      var contents = $('.vis-container');
+      var vizsNumber = contents.size();
+      // $('.numberOfVizs').html(vizsNumber);
+      for (var i = 0; i < vizsNumber; i++) {
+          maxCounter= findMaxCounterNum(maxCounter, counterById(contents[i].id));
+      }
+      counter= maxCounter;
+   }
+   function addNewViz_General(top, left, width, height){ // Add new Viz to the layout
+      counter+= 1;
+      $("#panel").append('<div class="vis-container"  id="div"></div>');
+      var id = "viz";
+      $("#div").attr('id', id + counter);
+      var divId2="#"+id+counter ;
+      $(divId2).css({
+         width: (width / $("#panel").outerWidth(false)) * 100 + '%',
+         height: (height / $("#panel").outerHeight(false)) * 100 + '%',
+         left: left / $("#panel").outerWidth(false) * 100 + '%',
+         top:  top / $("#panel").outerHeight(false) * 100 + '%'
+      });
+
+      if (fixedLayoutStatus == false) {
+        $( divId2 ).draggable({
+           stop: function() {
+              var $el = $(divId2);
+              var pos = $el.position();
+              if (pos.left < 0) {
+                pos.left= 0;
+              }
+              if (pos.top < 0) {
+                pos.top= 0;
+              }
+              var widthStep= $("#panel").outerWidth(false) / 100;
+              var heightStep= $("#panel").outerHeight(false) / 100;
+              $(divId2).css({
+                  left: ( (Math.round(pos.left / widthStep) * widthStep) / $("#panel").outerWidth(false) )  * 100 + '%',
+                  top: ( (Math.round(pos.top / heightStep) * heightStep) / $("#panel").outerHeight(false) )  * 100 + '%',
+              });
+           }
+       });
+       $(divId2).resizable({
+         handles: "n, e, s, w, ne, nw, se, sw",
+         stop: function() {
+           var $el = $(divId2);
+           var pos = $el.position();
+           var widthStep= $("#panel").outerWidth(false) / 100;
+           var heightStep= $("#panel").outerHeight(false) / 100;
+           $(divId2).css({
+              width: ( (Math.round($(divId2).outerWidth(false) / widthStep) * widthStep) / $("#panel").outerWidth(false)) * 100 + '%',
+              height: ( (Math.round($(divId2).outerHeight(false) / heightStep) * heightStep) / $("#panel").outerHeight(false)) * 100 + '%',
+              height: $(divId2).outerHeight(false) / $("#panel").outerHeight(false) * 100 + '%',
+              left: ( (Math.round(pos.left / widthStep) * widthStep) / $("#panel").outerWidth(false) )  * 100 + '%',
+              top: ( (Math.round(pos.top / heightStep) * heightStep) / $("#panel").outerHeight(false) )  * 100 + '%',
+           });
+           $(divId2).css({ zIndex: '3' });
+           $(divId2).css({boxShadow:"0px 0px 5px 0px #D27005 inset"});
+         }
+       });
+      }
+
+      $(divId2).on('mousedown', function() {
+          $(divId2).css({ zIndex: '4'});
+          $(divId2).css({boxShadow:"0px 0px 5px 0px #D27005"});
+      });
+      $(divId2).on('mouseup', function() {
+          $(divId2).css({ zIndex: '3' });
+          $(divId2).css({boxShadow:"0px 0px 5px 0px #D27005 inset"});
+      });
+   }
+   function genLaybyTexEdi(){ //Generate Layout in panelArea by TextEditor
+     tNewVizIndex= 0;
+     var nodeID = $("#tLayComp");
+     var children = $("#jstree").jstree(true).get_node(nodeID).children;
+     $("#jstree").jstree(true).delete_node(children);
+
+     var layoutJSON = $('#editorTechJson').text();
+     var layoutObj = JSON.parse(layoutJSON);
+     var numOfVizs= layoutObj.numOfVizs;
+     var layTech= layoutObj.layTech;
+     $('#editorTechJson').text(JSON.stringify(layoutObj, null, 3));
+     $('#editorTechJson').each(function(i, block) {
+          hljs.highlightBlock(block);
+     });
+       // If the Layout tech is (grid Num*Num)
+     var layTGriFir4Let="";
+     var layTGriArgu1= "";
+     var layTGriArgu2= "";
+     var layTGriOperator= "";
+     var isOperand= false;
+     var firArguIsNum= false;
+     var secArguIsNum= false;
+     for(var i = 0; i < layTech.length; i++){
+        if (i<4) {
+           layTGriFir4Let+= layTech[i]
+        } else if (layTech[i] == " ") {
+
+        } else if (layTech[i] == "*") {
+           isOperand= true;
+           layTGriOperator= layTech[i]
+        } else if ( (i > 3) & (layTech[i] != "*") & (isOperand != true) ) {
+           layTGriArgu1 += layTech[i]
+        } else {
+           layTGriArgu2 += layTech[i]
+        }
+     }
+     var strToInt= parseInt(layTGriArgu1);
+     var intToStr= strToInt.toString()
+     if (intToStr.length == layTGriArgu1.length) {
+        firArguIsNum= true;
+     }
+     strToInt= parseInt(layTGriArgu2);
+     intToStr= strToInt.toString()
+     if (intToStr.length == layTGriArgu2.length) {
+        secArguIsNum= true;
+     }
+       // End, if the Layout tech is (grid Num*Num)
+       // Start, if the Layout tech is (goldenratio) e.g. " goldenratiov6q4s70% "
+     var GR11Let="";
+     var gRvNum="";
+     var gRqNum="";
+     var gRsNum="";
+     var isLetv= false;
+     var isLetq= false;
+     var isLets= false;
+     var vIsNum= false;
+     var qIsNum= false;
+     var sIsNum= false;
+     var letvPos= 0;
+     var letqPos= 0;
+     var letsPos= 0;
+     for(var i = 0; i < layTech.length; i++){
+        if (i<11) {
+           GR11Let+= layTech[i]
+        } else if (layTech[i] == " ") {
+
+        } else if (layTech[i] == "s") {
+           isLets= true;
+           letsPos= i;
+         } else if (layTech[i] == "q") {
+             isLetq= true;
+             letqPos= i;
+        } else if (layTech[i] == "v") {
+           isLetv= true;
+           letvPos= i;
+        } else if ( (isLetv == true) & (isLetq == false) ) {
+           gRvNum += layTech[i]
+        } else if ( (isLetq == true) & (isLets == false) ) {
+           gRqNum += layTech[i]
+        } else if ( (isLets == true) & (layTech[i] != "%") ) {
+           gRsNum += layTech[i]
+        }
+     }
+     var strToInt= parseInt(gRvNum);
+     var intToStr= strToInt.toString()
+     if (intToStr.length == gRvNum.length) {
+        vIsNum= true;
+     }
+     var strToInt= parseInt(gRqNum);
+     var intToStr= strToInt.toString()
+     if (intToStr.length == gRqNum.length) {
+        qIsNum= true;
+     }
+     var strToInt= parseInt(gRsNum);
+     var intToStr= strToInt.toString()
+     if (intToStr.length == gRsNum.length) {
+        sIsNum= true;
+     }
+       // End If the Layout tech is (goldenratio)
+     if (GR11Let=="goldenratio") {
+        counter= 0;
+        $('#panel').html("");
+        addLines();
+        var sizeRatio= 75;
+        if (sIsNum == true) {
+           sizeRatio= parseInt(gRsNum);
+        }
+        var a= [];
+        var b= [];
+        var top= [];
+        var left= [];
+        var sliceDepth= 2;
+
+        if (vIsNum == true) {
+           sliceDepth= parseInt(gRvNum);
+        }
+        var goldenRatio= 1.61803398875;
+        var goldRatiquarter= "1";
+        if (qIsNum == true) {
+           goldRatiquarter= parseInt(gRqNum);
+        }
+        var parentHight= $("#panel").height();
+        var parentWidth= $("#panel").width();
+        top[0]= 0;
+        a[0]= parentHight;
+        a[1]= (a[0] * goldenRatio) - a[0];
+        var px= 1;
+        while ( (a[0]+a[1]) > parentWidth  ) {
+           a[0]= parentHight - px;
+           if (a[0] == 10) {
+             break;
+           }
+           a[1]= (a[0] * goldenRatio) - a[0];
+           px= px + 1;
+        }
+        a[0]= (a[0] * sizeRatio) / 100;
+        a[1]= (a[0] * goldenRatio) - a[0];
+        top[0]= (parentHight - a[0]) /2;
+        if ( goldRatiquarter == "1" ) {
+           $('#panel').html("");
+           addLines();
+           left[0]= ( ($("#panel").width()) - (a[0] + a[1]) ) / 2;
+           creatNod();
+           addNewViz_General(top[0], left[0] , a[0], a[0]);
+           for (var i = 1; i < sliceDepth; i++) {
+             a[i]= (a[i-1] * goldenRatio) - a[i-1];
+             if ( (i%4) == 1) {
+               top[i]= top[i-1] + (a[i-1] - a[i]);
+               left[i]= left[i-1] + a[i-1];
+             } else if ( (i%4) == 2) {
+               top[i]= top[i-1] - a[i];
+               left[i]= left[i-1] + (a[i-1] - a[i]);
+             } else if ( (i%4) == 3) {
+               top[i]= top[i-1];
+               left[i]= left[i-1] - a[i];
+             } else if ( ((i%4) == 0) & (i!=0) ) {
+               top[i]= top[i-1] + a[i-1];
+               left[i]= left[i-1];
+             }
+             if (i == (sliceDepth -1)) {
+               if ( (i % 2)== 0 )  {
+                 left[i]= left[i-1];
+                 creatNod();
+                 addNewViz_General(top[i], left[i] , a[i-1] , a[i]);
+               } else {
+                 top[i]= top[i-1];
+                 creatNod();
+                 addNewViz_General(top[i], left[i] , a[i] , a[i-1] );
+               }
+             } else {
+               creatNod();
+               addNewViz_General(top[i], left[i] , a[i] , a[i]);
+             }
+           }
+         } else if ( goldRatiquarter == "2" ) {
+            left[0]= ( ( ($("#panel").width()) - (a[0] + a[1]) ) / 2 ) + a[1] ;
+            creatNod();
+            addNewViz_General(top[0], left[0] , a[0], a[0]);
+            for (var i = 1; i < sliceDepth; i++) {
+              a[i]= (a[i-1] * goldenRatio) - a[i-1];
+              if ( (i%4) == 1) {
+                top[i]= top[i-1] + (a[i-1] - a[i]);
+                left[i]= left[i-1] - a[i];
+              } else if ( (i%4) == 2) {
+                top[i]= top[i-1] - a[i];
+                left[i]= left[i-1];
+              } else if ( (i%4) == 3) {
+                top[i]= top[i-1];
+                left[i]= left[i-1] + a[i-1];
+              } else if ( ((i%4) == 0) & (i!=0) ) {
+                top[i]= top[i-1] + a[i-1];
+                left[i]= left[i-1] + (a[i-1] - a[i]);
+              }
+              if (i == (sliceDepth -1)) {
+                if ( (i % 2)== 0 )  {
+                  left[i]= left[i-1];
+                  creatNod();
+                  addNewViz_General(top[i], left[i] , a[i-1] , a[i]);
+                } else {
+                  top[i]= top[i-1];
+                  creatNod();
+                  addNewViz_General(top[i], left[i] , a[i] , a[i-1] );
+                }
+              } else {
+                creatNod();
+                addNewViz_General(top[i], left[i] , a[i] , a[i]);
+              }
+            }
+         } else if ( goldRatiquarter == "3" ) {
+            left[0]= ( ( ($("#panel").width()) - (a[0] + a[1]) ) / 2 ) + a[1] ;
+            creatNod();
+            addNewViz_General(top[0], left[0] , a[0], a[0]);
+            for (var i = 1; i < sliceDepth; i++) {
+              a[i]= (a[i-1] * goldenRatio) - a[i-1];
+              if ( (i%4) == 1) {
+                top[i]= top[i-1];
+                left[i]= left[i-1] - a[i];
+              } else if ( (i%4) == 2) {
+                top[i]= top[i-1] + a[i-1];
+                left[i]= left[i-1];
+              } else if ( (i%4) == 3) {
+                top[i]= top[i-1] + (a[i-1] - a[i]);
+                left[i]= left[i-1] + a[i-1];
+              } else if ( ((i%4) == 0) & (i!=0) ) {
+                top[i]= top[i-1] - a[i];
+                left[i]= left[i-1] + (a[i-1] - a[i]);
+              }
+              if (i == (sliceDepth -1)) {
+                if ( (i % 2)== 0 )  {
+                  left[i]= left[i-1];
+                  creatNod();
+                  addNewViz_General(top[i], left[i] , a[i-1] , a[i]);
+                } else {
+                  top[i]= top[i-1];
+                  creatNod();
+                  addNewViz_General(top[i], left[i] , a[i] , a[i-1] );
+                }
+              } else {
+                creatNod();
+                addNewViz_General(top[i], left[i] , a[i] , a[i]);
+              }
+            }
+          } else if ( goldRatiquarter == "4" ) {
+             left[0]= ( ($("#panel").width()) - (a[0] + a[1]) ) / 2;
+             creatNod();
+             addNewViz_General(top[0], left[0] , a[0], a[0]);
+             for (var i = 1; i < sliceDepth; i++) {
+               a[i]= (a[i-1] * goldenRatio) - a[i-1];
+               if ( (i%4) == 1) {
+                 top[i]= top[i-1];
+                 left[i]= left[i-1] + a[i-1];
+               } else if ( (i%4) == 2) {
+                 top[i]= top[i-1] + a[i-1];
+                 left[i]= left[i-1] + (a[i-1] -a[i]);
+               } else if ( (i%4) == 3) {
+                 top[i]= top[i-1] + (a[i-1] - a[i]);
+                 left[i]= left[i-1] - a[i];
+               } else if ( ((i%4) == 0) & (i!=0) ) {
+                 top[i]= top[i-1] - a[i];
+                 left[i]= left[i-1];
+               }
+               if (i == (sliceDepth -1)) {
+                 if ( (i % 2)== 0 )  {
+                   left[i]= left[i-1];
+                   creatNod();
+                   addNewViz_General(top[i], left[i] , a[i-1] , a[i]);
+                 } else {
+                   top[i]= top[i-1];
+                   creatNod();
+                   addNewViz_General(top[i], left[i] , a[i] , a[i-1] );
+                 }
+               } else {
+                 creatNod();
+                 addNewViz_General(top[i], left[i] , a[i] , a[i]);
+               }
+             }
+         }
+     } else if (layTech=="grid") {
+        counter= 0;
+        var vizsInRow= 1;
+        $('#panel').html("");
+        addLines();
+        if (numOfVizs < 9) {
+          vizsInRow= 2;
+        } else {
+          vizsInRow= Math.floor( Math.sqrt( numOfVizs ) );
+        }
+        var panelHeight= 100;
+        var panelWidth= 100;
+        var vizHeight= 10; // يجب تعديلهم في المستقبل
+        var vizWidth= 10;
+        var numbOfCol= vizsInRow;
+        var numbOfRow= Math.ceil( numOfVizs / numbOfCol );
+        var vTop = ( panelHeight / 2 ) - ( vizHeight / 2 ) * numbOfRow ;
+        var vLeft = ( panelWidth / 2 ) - ( vizWidth / 2 ) * numbOfCol ;
+        var vizTop = vTop;
+        var vizLeft = vLeft;
+        for (var i = 1; i <= numOfVizs; i++) {
+          if ( (((i-1) % vizsInRow)== 0) && (!((i-1) < vizsInRow)) ) {
+            vizLeft= vLeft;
+            vizTop += 10;
+          }
+          creatNod();
+          addNewViz_Grid(vizTop, vizLeft); // addNewViz_Grid
+          vizLeft+= 10;
+        }
+
+
+     } else if ( layTech == "user" ){
+
+
+        loadVizsFromTexEdi();
+        describeViz();
+        var contents = $('.vis-container');
+        var vizsNumber = contents.size();
+        if (vizsNumber==0){
+          counter= 0;
+        }
+
+        // var contents = $('.vis-container');
+        // var vizsNumber = contents.size();
+        //
+        // if (vizsNumber<numOfVizs) {
+        //    for (var i = 0; i < (numOfVizs-vizsNumber); i++) {
+        //      addNewViz();
+        //    }
+        // } else if (vizsNumber>numOfVizs) {
+        //    for (var i = (vizsNumber-1); i > (numOfVizs-1); i--) {
+        //      contents[i].remove();
+        //    }
+        // }
+        //
+        //
+        // if (vizsNumber==0){
+        //   counter= 0;
+        // }
+
+
+
+
+
+     } else if ( (layTGriFir4Let=="grid") & (firArguIsNum & secArguIsNum & (layTGriOperator=="*") ) ) {
+       counter= 0;
+       var vizsInRow= 1;
+       $('#panel').html("");
+       addLines();
+       var vizsInCol= parseInt(layTGriArgu1);
+       var vizsInRow= parseInt(layTGriArgu2);
+       var panelHeight= 100;
+       var panelWidth= 100;
+       var vizHeight= 10; // يجب تعديلهم في المستقبل
+       var vizWidth= 10;
+       var numbOfCol= vizsInRow;
+       var numbOfRow= vizsInCol;
+       var vTop = ( panelHeight / 2 ) - ( vizHeight / 2 ) * numbOfRow ;
+       var vLeft = ( panelWidth / 2 ) - ( vizWidth / 2 ) * numbOfCol ;
+       var vizTop = vTop;
+       var vizLeft = vLeft;
+       for (var row = 1; row <= vizsInCol; row++) {
+         vizLeft= vLeft;
+          for (var col = 1; col <= vizsInRow; col++) {
+            creatNod();
+            addNewViz_Grid(vizTop, vizLeft); // addNewViz_Grid
+            vizLeft+= 10;
+          }
+          vizTop += 10;
+       }
+     } else if ( layTech == "random" ){
+         counter= 0;
+         $('#panel').html("");
+         addLines();
+         for (var i = 0; i < (numOfVizs); i++) {
+             var vizHeig= 10;
+             var vizWidt= 10;
+             var vizTop= Math.floor(Math.random() * (100 - vizHeig)) + 1 + '';
+             var vizLeft= Math.floor(Math.random() * (100 - vizWidt)) + 1 + '';
+             creatNod();
+             addNewViz_Grid(vizTop, vizLeft);  // addNewViz_Grid
+         }
+     }
+     describeViz();
+   }
+   var counter=0;  // Count the number of Viz
+   function applyLayoutAppearance(){
+     var layoutJSON = $('#editorTLayout').text();
+     var layoutObj = JSON.parse(layoutJSON);
+     $('#panel').css('background', layoutObj.apperance.backgroundColor);
+     $('#panel').css('border', layoutObj.apperance.border);
+     $('#panel').css('box-shadow', layoutObj.apperance.boxShadow);
+     $('#panel').css('padding', layoutObj.apperance.padding);
+     $('#editorTLayout').text(JSON.stringify(layoutObj, null, 3));
+     $('#editorTLayout').each(function(i, block) {
+        hljs.highlightBlock(block);
+     });
+   }
+   $(document).ready(function(){
+      // addLines();  //Add lines
+      $(window).resize(function(e){ // On resizee panelArea
+         e.preventDefault();
+         setPanelAreaSize();
+         addLines();
+      });
+      creatThumbnails();
+      counter=0;  // Count the number of Viz
+
+      // addNewViz();    // Add first Viz when page start upload
+      // updateTexEdi(); // Update TextEditor with first Viz info when page start upload
+
+
+
+      var layoutJSONTech = $('#editorTechJson').text();
+      var layoutObjTech = JSON.parse(layoutJSONTech);
+      $('#editorTechJson').text(JSON.stringify(layoutObjTech, null, 3));
+
+      $('#editorTechJson').each(function(i, block) {
+           hljs.highlightBlock(block);
+      });
+
+      $('#updTexEdi').on('click', function(e){ // Update-TextEditor button
+         e.preventDefault();                   // (uses to update TextEditor)
+         updateTexEdi();
+      });
+
+      $('#genLaybyTexEdi').on('click', function(e){ // Generate-Layout-by-TextEditor button
+          e.preventDefault();
+          $('#panel').html("");
+          counter= 0;
+          genLaybyTexEdi();                       // Generate Layout (Vizs) in panelArea
+      });
+
+      $('#genLaybyGrammar').on('click', function(e){ // Generate-Layout-by-New Grammar button
+          e.preventDefault();
+          $('#panel').html("");
+          counter= 0;
+          layFromNewGrammar();                       // Generate Layout (Vizs) in panelArea
+      });
+
+      $('#resetLayout').on('click', function(e){ // resetBasic();
+         e.preventDefault();
+        $('#basicLayotWidt').prop('value', 100);
+        $('#basicLayotHieh').prop('value', 100);
+        $("#panel").css('width', "100%");
+        $("#panel").css('height', "100%");
+        var pAW = $('#panelArea').width();
+        var pAH = $('#panelArea').height();
+        var wP = $('#panel').width();
+        var hP = $('#panel').height();
+        $('#panel').css({'left':((pAW - wP)/ 2)+'px'});
+        $('#panel').css({'top':((pAH - hP)/ 2)+'px'});
+        var layoutJSON = $('#editorVizsJson').text();
+        var layoutObj = JSON.parse(layoutJSON);
+        layoutObj.laySize.height= "100%";
+        layoutObj.laySize.width= "100%";
+
+        $('#panel').css('background', "white");
+        document.getElementById("appearPanelBG").value = "white";
+
+
+        layoutObj.backgroundColor= "white";
+
+        $('#editorVizsJson').text(JSON.stringify(layoutObj, null, 3));
+        $('#editorVizsJson').each(function(i, block) {
+           hljs.highlightBlock(block);
+        });
+
+
+
+        $('#editorVizsJson').text(JSON.stringify(layoutObj, null, 3));
+        $('#editorVizsJson').each(function(i, block) {
+           hljs.highlightBlock(block);
+        });
+        fixedLayoutStatus= true;
+        $('#basicFixedLayout').prop('checked', true);
+        updateTexEdi();
+        loadVizsFromTexEdi();
+
+        // if (fixedLayoutStatus == false) {
+        //   $('#basicFixedLayout').prop('checked', true);
+        //   fixedLayoutStatus= true;
+        //   var contents = $('.vis-container');
+        //   var vizsNumber = contents.size();
+        //   for (var i = 0; i < vizsNumber; i++)  {
+        //     $("#"+contents[i].id).resizable();
+        //     $("#"+contents[i].id).draggable();
+        //     $("#"+contents[i].id).resizable('destroy');
+        //     $("#"+contents[i].id).draggable('destroy');
+        //   }
+        // } else {
+        //   var contents = $('.vis-container');
+        //   var vizsNumber = contents.size();
+        //   for (var i = 0; i < vizsNumber; i++)  {
+        //     $("#"+contents[i].id).resizable();
+        //     $("#"+contents[i].id).draggable();
+        //     $("#"+contents[i].id).resizable('destroy');
+        //     $("#"+contents[i].id).draggable('destroy');
+        //   }
+        // }
+
+      });
+
+      $('#applyLayout').on('click', function(e){ // Update-
+         e.preventDefault();
+         layoWidtOpt= $('#basicLayotWidt').val();
+         layoHeigOpt= $('#basicLayotHieh').val();
+         $("#panel").css('width', layoWidtOpt + "%");
+         $("#panel").css('height', layoHeigOpt + "%");
+         var pAW = $('#panelArea').width();
+         var pAH = $('#panelArea').height();
+         var wP = $('#panel').width();
+         var hP = $('#panel').height();
+         $('#panel').css({'left':((pAW - wP)/ 2)+'px'});
+         $('#panel').css({'top':((pAH - hP)/ 2)+'px'});
+         var layoutJSON = $('#editorVizsJson').text();
+         var layoutObj = JSON.parse(layoutJSON);
+         layoutObj.laySize.height= layoHeigOpt + "%";
+         layoutObj.laySize.width= layoWidtOpt + "%";
+
+
+
+
+         $('#panel').css('background', $("#appearPanelBG").val());
+         // document.getElementById("appearPanelBG").value = "Johnny Bravo";
+
+         layoutObj.backgroundColor= $("#appearPanelBG").val();
+
+         $('#editorVizsJson').text(JSON.stringify(layoutObj, null, 3));
+         $('#editorVizsJson').each(function(i, block) {
+            hljs.highlightBlock(block);
+         });
+
+         updateTexEdi();
+         loadVizsFromTexEdi();
+         // if (fixedLayoutStatus == true) {
+         //   var contents = $('.vis-container');
+         //   var vizsNumber = contents.size();
+         //   for (var i = 0; i < vizsNumber; i++)  {
+         //     $("#"+contents[i].id).resizable();
+         //     $("#"+contents[i].id).draggable();
+         //     $("#"+contents[i].id).resizable('destroy');
+         //     $("#"+contents[i].id).draggable('destroy');
+         //   }
+         // } else {
+         //   var contents = $('.vis-container');
+         //   var vizsNumber = contents.size();
+         //   for (var i = 0; i < vizsNumber; i++)  {
+         //     var divId2="#"+contents[i].id;
+         //     $( divId2 ).draggable({
+         //         stop: function() {
+         //            var $el = $(divId2);
+         //            var pos = $el.position();
+         //            var widthStep= $("#panel").outerWidth(false) / 100;
+         //            var heightStep= $("#panel").outerHeight(false) / 100;
+         //            if (pos.left < 0) {
+         //              pos.left= 0;
+         //            }
+         //            if (pos.top < 0) {
+         //              pos.top= 0;
+         //            }
+         //            $(divId2).css({
+         //                left: ( (Math.round(pos.left / widthStep) * widthStep) / $("#panel").outerWidth(false) )  * 100 + '%',
+         //                top: ( (Math.round(pos.top / heightStep) * heightStep) / $("#panel").outerHeight(false) )  * 100 + '%',
+         //            });
+         //         }
+         //     });
+         //     $(divId2).resizable({
+         //       handles: "n, e, s, w, ne, nw, se, sw",
+         //       stop: function() {
+         //         var $el = $(divId2);
+         //         var pos = $el.position();
+         //         var widthStep= $("#panel").outerWidth(false) / 100;
+         //         var heightStep= $("#panel").outerHeight(false) / 100;
+         //         $(divId2).css({
+         //            width: ( (Math.round($(divId2).outerWidth(false) / widthStep) * widthStep) / $("#panel").outerWidth(false)) * 100 + '%',
+         //            height: ( (Math.round($(divId2).outerHeight(false) / heightStep) * heightStep) / $("#panel").outerHeight(false)) * 100 + '%',
+         //            height: $(divId2).outerHeight(false) / $("#panel").outerHeight(false) * 100 + '%',
+         //            left: ( (Math.round(pos.left / widthStep) * widthStep) / $("#panel").outerWidth(false) )  * 100 + '%',
+         //            top: ( (Math.round(pos.top / heightStep) * heightStep) / $("#panel").outerHeight(false) )  * 100 + '%',
+         //         });
+         //         $(divId2).css({ zIndex: '3' });
+         //         $(divId2).css({boxShadow:"0px 0px 10px 0px red inset"});
+         //       }
+         //     });
+         //   }
+         // }
+      });
+
+      // $('#resetAppear').on('click', function(e){ // resetBasic();
+         // e.preventDefault();
+         // $('#panel').css('background', "#cdf5bc");
+         // document.getElementById("appearPanelBG").value = "#cdf5bc";
+         // var layoutJSON = $('#editorVizsJson').text();
+         // var layoutObj = JSON.parse(layoutJSON);
+         // layoutObj.backgroundColor= "#cdf5bc";
+         // $('#editorVizsJson').text(JSON.stringify(layoutObj, null, 3));
+         // $('#editorVizsJson').each(function(i, block) {
+         //    hljs.highlightBlock(block);
+         // });
+      // });
+
+      // $('#applyAppear').on('click', function(e){ // Update-
+      //    e.preventDefault();
+      //    $('#panel').css('background', $("#appearPanelBG").val());
+      //    // document.getElementById("appearPanelBG").value = "Johnny Bravo";
+      //    var layoutJSON = $('#editorVizsJson').text();
+      //    var layoutObj = JSON.parse(layoutJSON);
+      //    layoutObj.backgroundColor= $("#appearPanelBG").val();
+      //    $('#editorVizsJson').text(JSON.stringify(layoutObj, null, 3));
+      //    $('#editorVizsJson').each(function(i, block) {
+      //       hljs.highlightBlock(block);
+      //    });
+      //
+      // });
+
+      $('#applyData').on('click', function(e){ // Update-
+         e.preventDefault();
+         // $('#panel').css('background', $("#appearPanelBG").val());
+         // // document.getElementById("appearPanelBG").value = "Johnny Bravo";
+         // var layoutJSON = $('#editorVizsJson').text();
+         // var layoutObj = JSON.parse(layoutJSON);
+         // layoutObj.backgroundColor= $("#appearPanelBG").val();
+         // $('#editorVizsJson').text(JSON.stringify(layoutObj, null, 3));
+         // $('#editorVizsJson').each(function(i, block) {
+         //    hljs.highlightBlock(block);
+         // });
+
+      });
+      $('#applyTech').on('click', function(e){ // Update-
+         e.preventDefault();
+
+
+         var visJSON= $('#editorvizTechJson').text();
+         var visObj = JSON.parse(visJSON);
+         var VisualObj = JSON.parse(VisualJSON);
+
+         VisualObj.visual[visTechSetTo-1]= visObj;
+         VisualJSON= JSON.stringify(VisualObj, null, 3);
+
+         $('#editorvizTechJson').text(visJSON);
+         $('#editorvizTechJson').each(function(i, block) {
+           hljs.highlightBlock(block);
+         });
+         console.log(VisualJSON);
+           // VisualObj['visual'].push(newVisual);
+           // visVisualJSON= JSON.stringify(VisualObj, null, 3);
+
+         // visTechSetTo
+         // var jSON = $('#editorvizTechJson').text();
+         // var obj = JSON.parse(jSON);
+         // $('#editorvizTechJson').text("");
+         // $('#editorvizTechJson').text(JSON.stringify(obj, null, 3));
+         // $('#editorvizTechJson').each(function(i, block) {
+         //    hljs.highlightBlock(block);
+         // });
+         // var VisualObj = JSON.parse(VisualJSON);
+         // VisualJSON= JSON.stringify(VisualObj, null, 3);
+
+
+
+
+         // $('#panel').css('background', $("#appearPanelBG").val());
+         // // document.getElementById("appearPanelBG").value = "Johnny Bravo";
+         // var layoutJSON = $('#editorVizsJson').text();
+         // var layoutObj = JSON.parse(layoutJSON);
+         // layoutObj.backgroundColor= $("#appearPanelBG").val();
+         // $('#editorVizsJson').text(JSON.stringify(layoutObj, null, 3));
+         // $('#editorVizsJson').each(function(i, block) {
+         //    hljs.highlightBlock(block);
+         // });
+
+         removeCaseStudy2('viz1', 'viz2', 'viz3');
+         CaseStudy3();
+
+      });
+
+      $('#resetTech').on('click', function(e){ // Update-
+         e.preventDefault();
+
+         var visObj = {
+                          "visType":"barchart",
+                          "caption": {"x":10, "y":10, "text":"Titale", "size":10, "color":"black"},
+                          "xAxis": {"textSize":"6px", "textRotate":0, "titale":"Xaxis titale", "titleSize":"6px", "titleColor":"black"},
+                          "yAxis": {"textSize":"6px", "textRotate":0, "titale":"Yaxis titale", "titleSize":"6px", "titleColor":"black"},
+                          "bar": { "barcolor":"red", "addBarTitles":"yes", "barTitlesColor":"black", "barTitlesSize":"6px", "addInteract":"yes", "interactColor":"blue"},
+                          "appear": {"verticalGridLines":"yes", "horizontalGridLines":"yes", "background":"white", "border":"0px groove green", "boxShadow":"0px 0px 5px 0px #D27005 inset", "margin":40 }};
+
+         var visJSON= JSON.stringify(visObj, null, 3);
+         $('#editorvizTechJson').text(visJSON);
+         $('#editorvizTechJson').each(function(i, block) {
+           hljs.highlightBlock(block);
+         });
+
+         var VisualObj = JSON.parse(VisualJSON);
+         VisualObj.visual[visTechSetTo-1]= visObj;
+         VisualJSON= JSON.stringify(VisualObj, null, 3);
+
+
+
+
+
+         // $('#panel').css('background', $("#appearPanelBG").val());
+         // // document.getElementById("appearPanelBG").value = "Johnny Bravo";
+         // var layoutJSON = $('#editorVizsJson').text();
+         // var layoutObj = JSON.parse(layoutJSON);
+         // layoutObj.backgroundColor= $("#appearPanelBG").val();
+         // $('#editorVizsJson').text(JSON.stringify(layoutObj, null, 3));
+         // $('#editorVizsJson').each(function(i, block) {
+         //    hljs.highlightBlock(block);
+         // });
+
+
+         removeCaseStudy2('viz1', 'viz2', 'viz3');
+         CaseStudy3();
+
+      });
+
+      $('#applyTLayout').on('click', function(e){ // Update-
+         e.preventDefault();
+         applyLayoutAppearance();
+      });
+      $('#resetTLayout').on('click', function(e){ // Update-
+        e.preventDefault();
+        var layoutJSON = $('#editorTLayout').text();
+        var layoutObj = JSON.parse(layoutJSON);
+        layoutObj.apperance.backgroundColor="white";
+        $('#panel').css('background', layoutObj.apperance.backgroundColor);
+        layoutObj.apperance.border='0px solid  black';
+        $('#panel').css('border', layoutObj.apperance.border);
+        layoutObj.apperance.boxShadow= '0px 0px 0px 0px black inset';
+        $('#panel').css('box-shadow', layoutObj.apperance.boxShadow);
+        //نقص.. يجب ربطه مع مساحة البنل الكلية
+        layoutObj.apperance.boxShadow= '0px 0px 0px 0px';
+        $('#panel').css('padding', layoutObj.apperance.boxShadow);
+        $('#editorTLayout').text(JSON.stringify(layoutObj, null, 3));
+        $('#editorTLayout').each(function(i, block) {
+           hljs.highlightBlock(block);
+        });
+      });
+
+
+      $('#erasedatafile').on('click', function(e){ // Update-
+         e.preventDefault();
+         // $('#panel').css('background', $("#appearPanelBG").val());
+         // // document.getElementById("appearPanelBG").value = "Johnny Bravo";
+         // var layoutJSON = $('#editorVizsJson').text();
+         // var layoutObj = JSON.parse(layoutJSON);
+         // layoutObj.backgroundColor= $("#appearPanelBG").val();
+         // $('#editorVizsJson').text(JSON.stringify(layoutObj, null, 3));
+         // $('#editorVizsJson').each(function(i, block) {
+         //    hljs.highlightBlock(block);
+         // });
+
+      });
+
+
+
+      $("#addVis").click(function (){  //Add Vis button
+       //  e.preventDefault();
+       addNewViz();
+       creatNod();
+      });
+
+      function check_charcount(e){
+         if(e.keyCode < 48 || e.keyCode > 57){
+             e.preventDefault();
+         }
+      }
+       $("#fileToLoadVisData").on('mouseover', function(e){
+           $('#choosDataFileSpan').css("color", "#ed7c36");
+       });
+       $("#fileToLoadVisData").on('mouseleave', function(e){
+           $('#choosDataFileSpan').css("color", "black");
+       });
+       $("#erasedatafile").on('mouseover', function(e){
+           $('#erasedatafile').css("color", "#ed7c36");
+       });
+       $("#erasedatafile").on('mouseleave', function(e){
+           $('#erasedatafile').css("color", "black");
+       });
+       $("#resetTech").on('mouseover', function(e){
+           $('#resetTech').css("color", "#ed7c36");
+       });
+       $("#resetTech").on('mouseleave', function(e){
+           $('#resetTech').css("color", "black");
+       });
+       $("#resetTLayout").on('mouseover', function(e){
+           $('#resetTLayout').css("color", "#ed7c36");
+       });
+       $("#resetTLayout").on('mouseleave', function(e){
+           $('#resetTLayout').css("color", "black");
+       });
+       $("#fileToLoadFS").on('mouseover', function(e){
+           $('#openLayoutFirsScrSpan').css("color", "#ed7c36");
+       });
+       $("#fileToLoadFS").on('mouseleave', function(e){
+           $('#openLayoutFirsScrSpan').css("color", "black");
+       });
+       $("#fileToLoad").on('mouseover', function(e){
+           $('#openLayoutSeconScrSpan').css("color", "#ed7c36");
+       });
+       $("#fileToLoad").on('mouseleave', function(e){
+           $('#openLayoutSeconScrSpan').css("color", "black");
+       });
+       $("#creatNewLayo").on('mouseover', function(e){
+           $('#creatNewLayo').css("color", "#ed7c36");
+       });
+       $("#creatNewLayo").on('mouseleave', function(e){
+           $('#creatNewLayo').css("color", "black");
+       });
+       $("#updTexEdi").on('mouseover', function(e){
+           $('#updTexEdi').css("color", "#ed7c36");
+       });
+       $("#updTexEdi").on('mouseleave', function(e){
+           $('#updTexEdi').css("color", "black");
+       });
+       $("#applyLayout").on('mouseover', function(e){
+           $('#applyLayout').css("color", "#ed7c36");
+       });
+       $("#applyLayout").on('mouseleave', function(e){
+           $('#applyLayout').css("color", "black");
+       });
+       $("#resetLayout").on('mouseover', function(e){
+           $('#resetLayout').css("color", "#ed7c36");
+       });
+       $("#resetLayout").on('mouseleave', function(e){
+           $('#resetLayout').css("color", "black");
+       });
+       $("#applyAppear").on('mouseover', function(e){
+           $('#applyAppear').css("color", "#ed7c36");
+       });
+       $("#applyAppear").on('mouseleave', function(e){
+           $('#applyAppear').css("color", "black");
+       });
+       $("#applyData").on('mouseover', function(e){
+           $('#applyData').css("color", "#ed7c36");
+       });
+       $("#applyData").on('mouseleave', function(e){
+           $('#applyData').css("color", "black");
+       });
+       $("#applyTech ").on('mouseover', function(e){
+           $('#applyTech').css("color", "#ed7c36");
+       });
+       $("#applyTech").on('mouseleave', function(e){
+           $('#applyTech').css("color", "black");
+       });
+       $("#applyTLayout").on('mouseover', function(e){
+           $('#applyTLayout').css("color", "#ed7c36");
+       });
+       $("#applyTLayout").on('mouseleave', function(e){
+           $('#applyTLayout').css("color", "black");
+       });
+       $("#resetAppear").on('mouseover', function(e){
+           $('#resetAppear').css("color", "#ed7c36");
+       });
+       $("#resetAppear").on('mouseleave', function(e){
+           $('#resetAppear').css("color", "black");
+       });
+       $("#creatLay").on('click', function(e){
+         if (creatLayListOpt == "TextEditor") {
+           loadVizsFromTexEdi();
+           describeViz();
+           var contents = $('.vis-container');
+           var vizsNumber = contents.size();
+           if (vizsNumber==0){
+             counter= 0;
+           }
+         } else if (creatLayListOpt == "layTech") {
+           $('#panel').html("");
+           counter= 0;
+           genLaybyTexEdi();                       // Generate Layout (Vizs) in panelArea
+         } else {
+           $('#panel').html("");
+           counter= 0;
+           layFromNewGrammar();                       // Generate Layout (Vizs) in panelArea
+         }
+       });
+       $("#creatLay").on('mouseover', function(e){
+           $('#creatLay').css("color", "#ed7c36");
+       });
+       $("#creatLay").on('mouseleave', function(e){
+           $('#creatLay').css("color", "black");
+       });
+   });
+ </script>
+ <script type="text/javascript">
+   function addNewViz_Grid(y, x){ // Add new Viz to the layout
+     counter+= 1;
+     var percentage = '10%';
+     $("#panel").append('<div class="vis-container" style="height:'+percentage+'; width:'+percentage+'; top:'+y+"%"+'; left:'+x+"%"+' " id="div"></div>');
+     var id = "viz";
+     $("#div").attr('id', id + counter);
+     var divId2="#"+id+counter ;
+
+     if (fixedLayoutStatus == false) {
+       $( divId2 ).draggable({
+          stop: function() {
+             var $el = $(divId2);
+             var pos = $el.position();
+             if (pos.left < 0) {
+               pos.left= 0;
+             }
+             if (pos.top < 0) {
+               pos.top= 0;
+             }
+             var widthStep= $("#panel").outerWidth(false) / 100;
+             var heightStep= $("#panel").outerHeight(false) / 100;
+             $(divId2).css({
+                 left: ( (Math.round(pos.left / widthStep) * widthStep) / $("#panel").outerWidth(false) )  * 100 + '%',
+                 top: ( (Math.round(pos.top / heightStep) * heightStep) / $("#panel").outerHeight(false) )  * 100 + '%',
+             });
+          }
+      });
+      $(divId2).resizable({
+        handles: "n, e, s, w, ne, nw, se, sw",
+        stop: function() {
+          var $el = $(divId2);
+          var pos = $el.position();
+          var widthStep= $("#panel").outerWidth(false) / 100;
+          var heightStep= $("#panel").outerHeight(false) / 100;
+          $(divId2).css({
+             width: ( (Math.round($(divId2).outerWidth(false) / widthStep) * widthStep) / $("#panel").outerWidth(false)) * 100 + '%',
+             height: ( (Math.round($(divId2).outerHeight(false) / heightStep) * heightStep) / $("#panel").outerHeight(false)) * 100 + '%',
+             height: $(divId2).outerHeight(false) / $("#panel").outerHeight(false) * 100 + '%',
+             left: ( (Math.round(pos.left / widthStep) * widthStep) / $("#panel").outerWidth(false) )  * 100 + '%',
+             top: ( (Math.round(pos.top / heightStep) * heightStep) / $("#panel").outerHeight(false) )  * 100 + '%',
+          });
+          $(divId2).css({ zIndex: '3' });
+          $(divId2).css({boxShadow:"0px 0px 5px 0px #D27005 inset"});
+        }
+      });
+     }
+
+     $(divId2).on('mousedown', function() {
+         $(divId2).css({ zIndex: '4'});
+         $(divId2).css({boxShadow:"0px 0px 5px 0px #D27005"});
+     });
+     $(divId2).on('mouseup', function() {
+         $(divId2).css({ zIndex: '3' });
+         $(divId2).css({boxShadow:"0px 0px 5px 0px #D27005 inset"});
+     });
+     describeViz();
+   }
+   function saveTextAsFile(){
+     var textToSave = "layoutEditor"+ $('#editorVizsJson').text()+ "layoutAppearance"+ $('#editorTLayout').text()+ "visualisation"+ VisualJSON;
+
+     var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
+     var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+     var fileNameToSaveAs = "project.txt";
+     var downloadLink = document.createElement("a");
+     downloadLink.download = fileNameToSaveAs;
+     downloadLink.innerHTML = "Download File";
+     downloadLink.href = textToSaveAsURL;
+     downloadLink.onclick = destroyClickedElement;
+     downloadLink.style.display = "none";
+     document.body.appendChild(downloadLink);
+     downloadLink.click();
+   }
+
+   function destroyClickedElement(event){
+       document.body.removeChild(event.target);
+   }
+   function loadFileAsText() {
+      var fileToLoad = document.getElementById("fileToLoad").files[0];
+      var fileReader = new FileReader();
+      fileReader.onload = function(fileLoadedEvent)
+      {
+          var textFromFileLoaded = fileLoadedEvent.target.result;
+
+          var jSON2 = textFromFileLoaded.indexOf("layoutAppearance");
+          var layoutEditor= textFromFileLoaded.substring(12, jSON2);
+          $('#editorVizsJson').text(layoutEditor);
+          $('#editorVizsJson').each(function(i, block) {
+               hljs.highlightBlock(block);
+          });
+
+          var jSON3 = textFromFileLoaded.indexOf("visualisation");
+          var layoutAppearance= textFromFileLoaded.substring(jSON2+ 16, jSON3);
+          $('#editorTLayout').text(layoutAppearance);
+          $('#editorTLayout').each(function(i, block) {
+               hljs.highlightBlock(block);
+          });
+
+          var visualisation= textFromFileLoaded.substring(jSON3+ 13, textFromFileLoaded.length);
+          VisualJSON= visualisation;
+
+          loadVizsFromTexEdi();
+          applyLayoutAppearance();
+          CaseStudy3();
+      };
+      fileReader.readAsText(fileToLoad, "UTF-8");
+   }
+
+   function loadFileAsTextFirstScr() {
+      openLayoInSecoScre();
+      var fileToLoadFS = document.getElementById("fileToLoadFS").files[0];
+      var fileReaderFS = new FileReader();
+      fileReaderFS.onload = function(fileLoadedEvent)
+      {
+          var textFromFileLoadedFS = fileLoadedEvent.target.result;
+
+          var jSON2 = textFromFileLoadedFS.indexOf("layoutAppearance");
+          var layoutEditor= textFromFileLoadedFS.substring(12, jSON2);
+          $('#editorVizsJson').text(layoutEditor);
+          $('#editorVizsJson').each(function(i, block) {
+               hljs.highlightBlock(block);
+          });
+
+          var jSON3 = textFromFileLoadedFS.indexOf("visualisation");
+          var layoutAppearance= textFromFileLoadedFS.substring(jSON2+ 16, jSON3);
+          $('#editorTLayout').text(layoutAppearance);
+          $('#editorTLayout').each(function(i, block) {
+               hljs.highlightBlock(block);
+          });
+
+          var visualisation= textFromFileLoadedFS.substring(jSON3+ 13, textFromFileLoadedFS.length);
+          VisualJSON= visualisation;
+
+          loadVizsFromTexEdi();
+          applyLayoutAppearance();
+          CaseStudy3();
+
+          describeViz();
+          var contents = $('.vis-container');
+          var vizsNumber = contents.size();
+          if (vizsNumber==0){
+            counter= 0;
+          }
+      };
+      fileReaderFS.readAsText(fileToLoadFS, "UTF-8");
+   }
+ </script>
+ <script type="text/javascript">//Load Vis DataFile
+    var visData= [];
+    var visDataSetTo= 1;
+    var visTechSetTo= 1;
+    function loadVisDataFile() {
+      // console.log(visDataSetTo);
+      var fileToLoadVisData = document.getElementById("fileToLoadVisData").files[0];
+      var fileReaderVD = new FileReader();
+      fileReaderVD.onload = function(fileLoadedEvent)
+      {
+          var textFromFileLoadedVD = fileLoadedEvent.target.result; // نحتاج ان نختبر هنا لمنع حدوث خطأ عند فتح نافذة الاختيار ولانختار ملف
+          // visData[visDataSetTo]= $.csv.toArrays(textFromFileLoadedVD);
+          visData[visDataSetTo]= $.csv.toObjects(textFromFileLoadedVD);
+          // console.log(visData);
+
+          // csvToJson = require('convert-csv-to-json');
+          // var jsonCSV= visData[visDataSetTo];
+         //
+         // jsonCSV = JSON.stringify(visData[visDataSetTo]);
+         // for(let i=0; i<jsonCSV.length;i++){
+         //   console.log(jsonCSV[i].Year);
+         //   console.log(jsonCSV[i].million_barrels_per_day);
+         //
+         // }
+      };
+      fileReaderVD.readAsText(fileToLoadVisData, "UTF-8");
+    }
+ </script>
+ <script type="text/javascript">// Layout From Grammar
+   function assemArgum(st , stack) {
+      var argum= ")";
+      for (var i = st; i > -1; i--) {
+        if ((!isNaN(Number(stack[i]))) || (stack[i] == ",") || (stack[i].length > 2)) {
+          argum= stack[i] + argum;
+          st= st - 1;
+          stack.pop();
+        } else if ( stack[i] == "(" ) {
+          if (i > 1) {
+            argum= stack[i-2] + stack[i-1] + stack[i] + argum;
+            st= st - 3;
+            stack.pop();
+            stack.pop();
+            stack.pop();
+          } else if (i == 1) {
+            argum= stack[i-1] + stack[i] + argum;
+            st= st - 2;
+            stack.pop();
+            stack.pop();
+          } else {
+            $('.grammarText').css('color', 'red');
+          }
+          st= st + 1;
+          stack.push(argum);
+         break;
+        } else {
+          $('.grammarText').css('color', 'red');
+        }
+      }
+      return stack;
+    }
+   function findArguments(tex) {
+      var stack= [];
+      var st= -1;
+      var argums= [];
+      var ar= -1;
+      var length= tex.length;
+      var numStr="";
+      var j=0;
+      if (!isNaN(Number(tex))) {
+        ar= ar + 1;
+        argums.push(tex);
+      } else if (length >= 1) {
+        for (var i = 0; i < length; i++) {
+          if ((!isNaN(Number(tex[i]))) && (st == -1)) {
+            numStr= "";
+            while  (i < length) {
+              if ( (tex[i] <"0") || (tex[i] >"9") ) {
+                i= i - 1;
+                break
+              }
+              numStr= numStr + tex[i];
+              i= i + 1;
+            }
+            if ((i+1 < length) && (tex[i+1] == ".")){
+              i= i + 1;
+              if ((i+1 < length) && (!isNaN(Number(tex[i+1])))) {
+                numStr= numStr + tex[i] + tex[i+1];
+                i= i + 1;
+                if ((i+1 < length) && (!isNaN(Number(tex[i+1])))) {
+                  numStr= numStr + tex[i+1];
+                  i= i + 1;
+                }
+                if ((i+1 < length) && (!isNaN(Number(tex[i+1])))) {
+                  i= i + 1;
+                }
+              }
+            }
+            if ((i+1 < length) && (tex[i+1] == ",")){
+              ar= ar + 1;
+              argums.push(numStr);
+            } else if ((i+1 < length) && ((tex[i+1] == "v") || (tex[i+1] == "V") || (tex[i+1] == "h") || (tex[i+1] == "H"))) {
+              st= st + 1;
+              stack.push(numStr);
+              i= i + 1;
+              st= st + 1;
+              stack.push(tex[i]);
+            } else if ((i == length-2) && (tex[i+1] == ")") && (st == -1)){
+              ar= ar + 1;
+              argums.push(numStr);
+            }  else {
+              ar= ar + 1;
+              argums.push(numStr);
+            }
+          } else if ((tex[i] == ",") && (st == -1)) {
+            if (i-1 == -1) {
+              ar= ar + 1;
+              argums.push("");
+              if (i+1 == length) {
+                ar= ar + 1;
+                argums.push("");
+              }
+            } else if ((i-1 > -1) && (tex[i-1] == ",")) {
+              ar= ar + 1;
+              argums.push("");
+              if (i+1 == length) {
+                ar= ar + 1;
+                argums.push("");
+              }
+            } else if ((i-1 > -1) && (tex[i-1] != ",") && (i+1 == length)) {
+              ar= ar + 1;
+              argums.push("");
+            }
+          } else if ((!isNaN(Number(tex[i]))) && (st > -1))  {
+            numStr= "";
+            while  (i < length) {
+              if ( (tex[i] <"0") || (tex[i] >"9") ) {
+                i= i - 1;
+                break
+              }
+              numStr= numStr + tex[i];
+              i= i + 1;
+            }
+            if ((i+1 < length) && (tex[i+1] == ".")){
+              i= i + 1;
+              if ((i+1 < length) && (!isNaN(Number(tex[i+1])))) {
+                numStr= numStr + tex[i] + tex[i+1];
+                i= i + 1;
+                if ((i+1 < length) && (!isNaN(Number(tex[i+1])))) {
+                  numStr= numStr + tex[i+1];
+                  i= i + 1;
+                }
+                if ((i+1 < length) && (!isNaN(Number(tex[i+1])))) {
+                  i= i + 1;
+                }
+              }
+            }
+            st= st + 1;
+            stack.push(numStr);
+          } else if ((tex[i] == ",") && (st > -1)) {
+            st= st + 1;
+            stack.push(tex[i]);
+          } else if ((tex[i] == "v") || (tex[i] == "V") || (tex[i] == "h") || (tex[i] == "H")) {
+            st= st + 1;
+            stack.push(tex[i]);
+          } else if ((tex[i] == "(") && (st > -1)) {
+            st= st + 1;
+            stack.push(tex[i]);
+          } else if ((tex[i] == ")") && (st >= 2)) {
+            stack= assemArgum(st , stack);
+            st= stack.length - 1;
+            if (st == 0) {
+              ar= ar + 1;
+              argums.push(stack[st]);
+              st= st - 1;
+              stack.pop();
+            } else if (st > 0) {
+            } else {
+              $('.grammarText').css('color', 'red');
+            }
+          }
+        }
+      }
+      return argums;
+
+    }
+   function numbInArgums(arg){
+      var numStr= "";
+      var length= arg.length;
+      for (var i = 0; i < length; i++) {
+        if (!isNaN(Number(arg[i]))) {
+          numStr= "";
+          while  (i < length) {
+            if ( (arg[i] <"0") || (arg[i] >"9") ) {
+              i= i - 1;
+              break;
+            }
+            numStr= numStr + arg[i];
+            i= i + 1;
+          }
+          if ((i+1 < length) && (arg[i+1] == ".")){
+            i= i + 1;
+            if ((i+1 < length) && (!isNaN(Number(arg[i+1])))) {
+              numStr= numStr + arg[i] + arg[i+1];
+              i= i + 1;
+              if ((i+1 < length) && (!isNaN(Number(arg[i+1])))) {
+                numStr= numStr + arg[i+1];
+                i= i + 1;
+              }
+              if ((i+1 < length) && (!isNaN(Number(arg[i+1])))) {
+                i= i + 1;
+              }
+            }
+          }
+        } else {
+          break
+        }
+      }
+      return Number(numStr);
+    }
+   function stringInArgums(arg){
+      var str= "";
+      var length= arg.length;
+      var StrStart= false;
+      for (var i = 0; i < length; i++) {
+        if ( (!isNaN(Number(arg[i]))) && (StrStart == false) ) {
+          numStr= "";
+          while  (i < length) {
+            if ( (arg[i] <"0") || (arg[i] >"9") ) {
+              i= i - 1;
+              break;
+            }
+            i= i + 1;
+          }
+          if ((i+1 < length) && (arg[i+1] == ".")){
+            i= i + 1;
+            if ((i+1 < length) && (!isNaN(Number(arg[i+1])))) {
+              i= i + 1;
+              if ((i+1 < length) && (!isNaN(Number(arg[i+1])))) {
+                i= i + 1;
+              }
+              if ((i+1 < length) && (!isNaN(Number(arg[i+1])))) {
+                i= i + 1;
+              }
+            }
+          }
+        } else {
+          StrStart= true;
+          str= str + arg[i];
+        }
+      }
+      return str+"";
+    }
+   function cutGrammar (gramText, height, width, top, left) {
+      $('.grammarText').css('color', 'green');
+      var argums= [];
+      var length= 0;
+      var numCutStr="";
+      var typeCutStr="";
+      var ch0= "";
+      var ch1= "";
+      var ch2= "";
+      var ch3= "";
+      var tex= "";
+      var st= "";
+      var numIndex= -1;
+      var indxInArg= 0;
+      var argNum="";
+      var h, w, t, l= "";
+      var hArray, wArray, tArray, lArray= [];
+      var sum= 0;
+      var argLength=0;
+      var numInArg= [];
+      var strInArg= "";
+      var tem= 0;
+      var strPart= "";
+      var numbPart= 0;
+      var zeroNumInArg= 0;
+      var sumExceptLast= 0;
+      if (!isNaN(Number(gramText))) {
+        ch1= gramText;
+      } else if ((gramText.length >= 3) || ( (gramText.length == 1) && ((gramText == "v") || (gramText == "V") || (gramText == "h") || (gramText == "H")) ) ) {
+        if ( (gramText.length == 1) && ((gramText == "v") || (gramText == "V") || (gramText == "h") || (gramText == "H")) ) {
+          ch1= gramText.substring(0, 1);
+          ch2= "(";
+          ch3= ")";
+          tex= ",";
+        } else {
+          ch1= gramText.substring(0, 1);
+          ch2= gramText.substring(1, 2);
+          ch3= gramText.substring(gramText.length-1, gramText.length);
+          tex= gramText.substring(2, gramText.length-1);
+        }
+        argums= findArguments(tex);
+        length= argums.length;
+        if (tex == "") {
+          length= 0;
+        }
+        if (length > 1) {
+          zeroNumInArg= 0;
+          for (var i = 0; i < length; i++) {
+            if (!isNaN(Number(argums[i]))) {
+              numInArg.push(numbInArgums(argums[i]));
+              if (numInArg[i] == "0") {
+                zeroNumInArg= zeroNumInArg + 1;
+              }
+              sum= sum + Number(numInArg[i])
+            } else {
+              numInArg.push(numbInArgums(argums[i]));
+              if (numInArg[i] == "0") {
+                zeroNumInArg= zeroNumInArg + 1;
+              }
+              sum= sum + Number(numInArg[i])
+            }
+          }
+          if (zeroNumInArg == 0) {
+            if (sum != 100)  {
+              for (var i = 0; i < length; i++) {
+                if (!isNaN(Number(argums[i]))) {
+                  tem= numInArg[i] / sum;
+                  argums[i]= (tem.toFixed(2) * 100) + "";
+                } else {
+                  strInArg= stringInArgums(argums[i]);
+                  tem= numInArg[i] / sum;
+                  argums[i]= (tem.toFixed(2) * 100) + strInArg;
+                }
+              }
+            }
+          } else if (zeroNumInArg < length) {
+            tem= (100 - sum) / zeroNumInArg;
+            for (var i = 0; i < length; i++) {
+              if (!isNaN(Number(argums[i]))) {
+                if (numInArg[i] == "0") {
+                  argums[i]= tem.toFixed(2) + "";
+                }
+              } else {
+                if (numInArg[i] == "0") {
+                  strInArg= stringInArgums(argums[i]);
+                  argums[i]= tem.toFixed(2) + strInArg;
+                }
+              }
+            }
+
+          } else if ((zeroNumInArg == length)) {
+            tem= 100 / length;
+            for (var i = 0; i < length; i++) {
+              if (!isNaN(Number(argums[i]))) {
+                argums[i]= tem.toFixed(2) + "";
+              } else {
+                strInArg= stringInArgums(argums[i]);
+                argums[i]= tem.toFixed(2) + strInArg;
+              }
+            }
+          }
+          sum= 0;
+          numInArg=[];
+          sumExceptLast= 0;
+          for (var i = 0; i < length; i++) {
+            numInArg.push(numbInArgums(argums[i]));
+            if (i == length-1) {
+              sumExceptLast= sum
+            }
+            sum= sum + Number(numInArg[i]);
+          }
+          if (sum != 100)  {
+            tem= 100 - sumExceptLast;
+            if (!isNaN(Number(argums[length-1]))) {
+                argums[length-1]= tem + "";
+              } else {
+                strInArg= stringInArgums(argums[length-1]);
+                argums[length-1]= tem + strInArg;
+              }
+            }
+        } else if (length == 1) {
+          if (isNaN(Number(argums[0]))) {
+            strPart= stringInArgums(argums[0]);
+            numbPart= numbInArgums(argums[0]);
+            if ( (numbPart < 100) && (numbPart > 1) ) {
+              argums.push( (100 - numbPart) + "" );
+            } else {
+              argums.pop();
+              argums.push( "50" + strPart );
+              argums.push( "50" );
+            }
+          } else if ( (argums[0] < 100) && (argums[0] > 1) ) {
+            argums.push( (100 - argums[0]) + "" );
+          } else {
+            argums.pop();
+            argums.push( "50" );
+            argums.push( "50" );
+          }
+        } else if (length == 0) {
+          argums.push( "50" );
+          argums.push( "50" );
+        }
+        length= argums.length;
+      }
+      if ( ((ch1 == "v") || (ch1 == "V")) && (ch2 == "(") && (ch3 == ")") && (length >= 1)) {
+        h= height;
+        t= top;
+        wArray = [];
+        for (var i = 0; i < length; i++) {
+          numCutStr= "";
+          st= "";
+          st= argums[i];
+          indxInArg= 0;
+          argLength= st.length;
+          if ( (st.length > 0) && (!isNaN(Number(st[0])))) {
+            while  (indxInArg < argLength) {
+              if ( (st[indxInArg] <"0") || (st[indxInArg] >"9") ) {
+                indxInArg= indxInArg - 1;
+                break
+              }
+              numCutStr= numCutStr + st[indxInArg];
+              indxInArg= indxInArg + 1;
+            }
+            if ((indxInArg+1 < argLength) && (st[indxInArg+1] == ".")){
+              indxInArg= indxInArg + 1; // .
+              if ((indxInArg+1 < argLength) && (!isNaN(Number(st[indxInArg+1])))) {
+                numCutStr= numCutStr + st[indxInArg] + st[indxInArg+1];
+                indxInArg= indxInArg + 1;
+                if ((indxInArg+1 < argLength) && (!isNaN(Number(st[indxInArg+1])))) {
+                  numCutStr= numCutStr + st[indxInArg+1];
+                  indxInArg= indxInArg + 1;
+                }
+                if ((indxInArg+1 < argLength) && (!isNaN(Number(st[indxInArg+1])))) { // Ignore everything else
+                  indxInArg= indxInArg + 1;
+                }
+              }
+            }
+         }
+         wArray[i]= (Number(numCutStr) * width) / 100 ;
+        }
+        for (var i = 0; i < length; i++) {
+          w= 0;
+          for (var j = 0; j < i; j++) {
+            w= w + wArray[j];
+          }
+          l= left + w;
+          if (isNaN(Number(argums[i]))) {
+            if (!isNaN(Number(argums[i].substring(0, 5)))) {
+              argums[i]= argums[i].substring(5, argums[i].length);
+            } else if (!isNaN(Number(argums[i].substring(0, 4)))) {
+              argums[i]= argums[i].substring(4, argums[i].length);
+            } else if (!isNaN(Number(argums[i].substring(0, 3)))) {
+              argums[i]= argums[i].substring(3, argums[i].length);
+            } else if (!isNaN(Number(argums[i].substring(0, 2)))) {
+              argums[i]= argums[i].substring(2, argums[i].length);
+            } else if (!isNaN(Number(argums[i].substring(0, 1)))) {
+              argums[i]= argums[i].substring(1, argums[i].length);
+            } else {
+              argums[i]= argums[i].substring(0, argums[i].length);
+            }
+          }
+          cutGrammar(argums[i], h, wArray[i], t, l)
+        }
+      } else if ( ((ch1 == "h") || (ch1 == "H")) && (ch2 == "(") && (ch3 == ")") && (length >= 1)) {
+        w= width;
+        l= left;
+        hArray = [];
+        for (var i = 0; i < length; i++) {
+          numCutStr= "";
+          st= "";
+          st= argums[i];
+          indxInArg= 0;
+          argLength= st.length;
+          if ( (st.length > 0) && (!isNaN(Number(st[0])))) {
+            while  (indxInArg < argLength) {
+              if ( (st[indxInArg] <"0") || (st[indxInArg] >"9") ) {
+                indxInArg= indxInArg - 1;
+                break
+              }
+              numCutStr= numCutStr + st[indxInArg];
+              indxInArg= indxInArg + 1;
+            }
+            if ((indxInArg+1 < argLength) && (st[indxInArg+1] == ".")){
+              indxInArg= indxInArg + 1;
+              if ((indxInArg+1 < argLength) && (!isNaN(Number(st[indxInArg+1])))) {
+                numCutStr= numCutStr + st[indxInArg] + st[indxInArg+1];
+                indxInArg= indxInArg + 1;
+                if ((indxInArg+1 < argLength) && (!isNaN(Number(st[indxInArg+1])))) {
+                  numCutStr= numCutStr + st[indxInArg+1];
+                  indxInArg= indxInArg + 1;
+                }
+                if ((indxInArg+1 < argLength) && (!isNaN(Number(st[indxInArg+1])))) { // Ignore everything else
+                  indxInArg= indxInArg + 1;
+                }
+              }
+            }
+         }
+         hArray[i]= (Number(numCutStr) * height) / 100 ;
+        }
+        for (var i = 0; i < length; i++) {
+          h= 0;
+          for (var j = 0; j < i; j++) {
+            h= h + hArray[j];
+          }
+          t= top + h;
+          if (isNaN(Number(argums[i]))) {
+            if (!isNaN(Number(argums[i].substring(0, 5)))) {
+              argums[i]= argums[i].substring(5, argums[i].length);
+            } else if (!isNaN(Number(argums[i].substring(0, 4)))) {
+              argums[i]= argums[i].substring(4, argums[i].length);
+            } else if (!isNaN(Number(argums[i].substring(0, 3)))) {
+              argums[i]= argums[i].substring(3, argums[i].length);
+            } else if (!isNaN(Number(argums[i].substring(0, 2)))) {
+              argums[i]= argums[i].substring(2, argums[i].length);
+            } else if (!isNaN(Number(argums[i].substring(0, 1)))) {
+              argums[i]= argums[i].substring(1, argums[i].length);
+            } else {
+              argums[i]= argums[i].substring(0, argums[i].length);
+            }
+          }
+          cutGrammar(argums[i], hArray[i], w, t, l)
+        }
+      } else if ((!isNaN(Number(ch1))) && (Number(ch1) > 0) && (ch2 == "") && (ch3 == "")) {
+        if (Number(ch1) > 100) {
+          ch1= "100";
+        }
+        creatNod("creatNod");
+        addNewViz_General(top, left, width, height);
+      } else {
+       $('.grammarText').css('color', 'red');
+       // $('.numberOfVizs').html("Error");
+      }
+    }
+   function checkGramTextValidity (gramText){
+     for (var i = 0; i < gramText.length; i++) {
+       if ( (gramText[i] == "v") || (gramText[i] == "V") || (gramText[i] == "h") || (gramText[i] == "H") || (gramText[i] == " ")
+                                 || (gramText[i] == "(") || (gramText[i] == ")") || (gramText[i] == ",") || (gramText[i] == ".")
+                                 || ((gramText[i] >= "0") && (gramText[i] <= "9")) ) {
+         // Don't do any things
+       } else {
+         gramText= "Error";
+         break;
+       }
+     }
+     return gramText;
+   }
+   function replVariInExpr(vari, valu){ // Replace Variabes by values in Expr
+     var valuLen= valu.length- 1;
+     var temp= valu[valuLen];
+     var varName= "";
+     var varValue= "";
+     var pos= -1;
+     var cut1= "";
+     var cut2= "";
+     var varSize= 0;
+     var name= "";
+     var value= "";
+     for (var j = 0; j <= valuLen; j++) {
+       name= vari[j];
+       value= valu[j];
+       pos= -1;
+       cut1= "";
+       cut2= "";
+       varSize= 0;
+       for (var i = 0; i <= valuLen; i++) {
+         if (i != j) {
+           varName= vari[i]+ "";
+           varValue= valu[i]+ "";
+           pos= varValue.indexOf(name);
+           while (pos != -1) {
+             cut1=varValue.substring(0, pos);
+             varSize= name.length;
+             cut2=varValue.substring(pos + varSize , varValue.length);
+             varValue= cut1 + value + cut2 + "";
+             valu[i]= varValue + "";
+             pos= varValue.indexOf(name)
+           }
+         }
+       }
+     }
+     valu[valuLen]= checkGramTextValidity(valu[valuLen].replace(/\s/g, ''));
+     return valu[valuLen] + ""
+   }
+   function findLayGrammarText(){ //Generate Layout in panelArea by new grammar
+     var layGramTex= $('#grammarEditor').text();
+     layGramTex=layGramTex.replace(/\s/g, '');
+     var cText= layGramTex;   // cText will be cut to creat variables table (variables & contant) contain
+     var vari=[];
+     var valu=[];
+     var pos1= 0;
+     var pos2= 0;
+     var variLen= 0;
+     var valuLen= 0;
+     pos1= cText.indexOf(":");
+     pos2= cText.indexOf(";");
+     while ((pos1 != -1) && (pos2 != -1)) {
+       pos1= cText.indexOf(":");
+       pos2= cText.indexOf(";");
+       cut1= cText.substring(0, pos1);
+       cut2= cText.substring(pos1+1, pos2);
+       cut3= cText.substring(pos2+1, cText.length);
+       cText= cut3;
+       if ((pos1 != -1) && (pos2 != -1)) {
+         vari.push(cut1);
+         valu.push(cut2);
+       }
+       pos1= cText.indexOf(":");
+       pos2= cText.indexOf(";");
+     }
+
+     valuLen= valu.length;
+     variLen= vari.length;
+     if ((valuLen > 0) && (vari.length == valu.length)){
+     //  valuLen= valuLen - 1;
+       layGramTex= replVariInExpr(vari, valu) + "";
+     } else if ((valuLen == 0) && (vari.length == valu.length)) {
+       layGramTex= checkGramTextValidity($('#grammarEditor').text().replace(/\s/g, ''));
+     } else  {
+       layGramTex= "Error";
+     }
+     return layGramTex
+   }
+   function layFromNewGrammar(){ //Generate Layout in panelArea by new grammar
+     $('#panel').html("");
+     counter= 0;
+     addLines();
+     var gramTex = findLayGrammarText();
+     if ( gramTex== "Error") {
+       $('#grammarEditor').css('color', "red")
+     } else {
+       $('#grammarEditor').css('color', "green")
+       var h = $('#panel').height();
+       var w = $('#panel').width();
+       setPanelAreaSize();
+       tNewVizIndex= 0;
+       var nodeID = $("#tLayComp");
+       var children = $("#jstree").jstree(true).get_node(nodeID).children;
+       $("#jstree").jstree(true).delete_node(children);
+
+       cutGrammar(gramTex.replace(/\s/g, ''), h, w, 0 ,0);
+     }
+   }
+ </script>
+ <script type="text/javascript">// Setup Second Screen
+   function openLayoInSecoScre() {
+     var x = document.getElementById("firstScreen");
+     x.style.display = "none";
+     var x = document.getElementById("secondScreen");
+     x.style.display = "block";
+     setPanelAreaSize();
+   }
+   function setPanelAreaSize() {
+     addLines();
+     var pABGW = $('#panelAreaBG').width();
+     var pABGH = $('#panelAreaBG').height();
+     if (pABGW > pABGH) {
+       $('#panelArea').css({'width':pABGH +'px'});
+       $('#panelArea').css({'height':pABGH +'px'});
+     } else {
+       $('#panelArea').css({'width':pABGW +'px'});
+       $('#panelArea').css({'height':pABGW +'px'});
+     }
+     var wPA = $('#panelArea').width();
+     var hPA = $('#panelArea').height();
+     $('#panelArea').css({'left':((pABGW - wPA)/ 2)+'px'});
+     $('#panelArea').css({'top':((pABGH - hPA)/ 2)+'px'});
+     var $cont = $('#panelArea');
+     var bWidth= $cont.width();
+     var bheight = $cont.height();
+
+     var layoutJSON = $('#editorVizsJson').text();
+     var layoutObj = JSON.parse(layoutJSON);
+     var panelHeightInTexEdi= layoutObj.laySize.height;
+     var panelWidthInTexEdi= layoutObj.laySize.width;
+
+     var pAW = $('#panelArea').width();
+     var pAH = $('#panelArea').height();
+     var wP = $('#panel').width();
+     var hP = $('#panel').height();
+     $("#panel").css('width', panelWidthInTexEdi);
+     $("#panel").css('height', panelHeightInTexEdi);
+     $('#panel').css({'left':((pAW - wP)/ 2)+'px'});
+     $('#panel').css({'top':((pAH - hP)/ 2)+'px'});
+     addLines();
+   }
+ </script>
+ <script type="text/javascript">// Creat Thumbnails
+   var GrammarSet= [ "1",
+        /*2 Views*/  "v(50,50)",
+                     "h(50,50)",
+
+        /*3 Views*/  "v(50h(50,50),50)",
+                     "v(50,50h(50,50))",
+                     "h(50v(50,50),50)",
+                     "h(50,50v(50,50))",
+                     "v(33.33,33.34,33.33)",
+                     "h(33.33,33.34,33.33)",
+
+        /*4 Views*/  "v(50h(50,50),50h(50,50))",
+                     "v(33.33h(50,50),33.34,33.33)",
+                     "v(33.33,33.34h(50,50),33.33)",
+                     "v(33.33,33.34,33.33h(50,50))",
+                     "h(33.33v(50,50),33.34,33.33)",
+                     "h(33.33,33.34v(50,50),33.33)",
+                     "h(33.33,33.34,33.33v(50,50))",
+                     "v(50h(66.5h(50,50),33.5),50)",
+                     "v(50,50h(66.5h(50,50),33.5))",
+                     "h(50v(33.33,33.34,33.33),50)",
+                     "h(50,50v(33.33,33.34,33.33))",
+                     "h(50v(50h(50,50),50),50)",
+                     "h(50v(50,50h(50,50)),50)",
+                     "h(50,50v(50h(50,50),50))",
+                     "h(50,50v(50,50h(50,50)))",
+                     "h(25,25,25,25)",
+                     "v(50h(50v(50,50),50),50)",
+                     "v(50h(50,50v(50,50)),50)",
+                     "v(50,50h(50v(50,50),50))",
+                     "v(50,50h(50,50v(50,50)))",
+                     "v(25,25,25,25)",
+
+        /*5 Views*/  "v(50h(50,50),50h(33.33,33.34,33.33))",
+                     "v(50h(33.33,33.34,33.33),50h(50,50))",
+                     "v(33.33,33.34h(50,50),33.33h(50,50))",
+                     "v(33.33h(50,50),33.34,33.33h(50,50))",
+                     "v(33.33h(50,50),33.34h(50,50),33.33)",
+                     "h(33.33,33.34v(50,50),33.33v(50,50))",
+                     "h(33.33v(50,50),33.34,33.33v(50,50))",
+                     "h(33.33v(50,50),33.34v(50,50),33.33)",
+                     "h(50v(33.33h(50,50),33.34,33.33),50)",
+                     "h(50v(33.33,33.34h(50,50),33.33),50)",
+                     "h(50v(33.33,33.34,33.33h(50,50)),50)",
+                     "h(50,50v(33.33h(50,50),33.34,33.33))",
+                     "h(50,50v (33.33,33.34h(50,50),33.33) )",
+                     "h(50,50v(33.33,33.34,33.33h(50,50)))",
+
+        /*6 Views*/  "h(50v(33.33,33.34,33.33),50v(33.33,33.34,33.33))",
+                     "v(50h(33.33,33.34,33.33),50h(33.33,33.34,33.33))",
+
+        /*8 Views*/  "h(50v(25,25,25,25),50v(25,25,25,25))",
+                     "v(50h(25,25,25,25),50h(25,25,25,25))",
+
+        /*9 Views*/  "h(33.33v(33.33,33.34,33.33),33.34v(33.33,33.34,33.33),33.33v(33.33,33.34,33.33))",
+
+/*goldenRatio*/  "v(38.1h(38.46v(62.5,37.5h(60,40v(33.3,66.7))),61.54),61.9)"
+   ];
+
+   var GrammarClassSet= [ "1View  comparison exploration explanation square",
+
+                          "2View  comparison exploration explanation", "2View  comparison exploration explanation timeLine",
+
+                          "3View  comparison exploration explanation square", "3View  comparison exploration explanation square", "3View  comparison exploration explanation timeLine square", "3View  comparison exploration explanation timeLine square", "3View  comparison exploration explanation", "3View  comparison exploration explanation timeLine",
+
+                          "4View  comparison exploration explanation square", "4View  comparison exploration explanation", "4View  comparison exploration explanation", "4View  comparison exploration explanation", "4View  comparison exploration explanation timeLine", "4View  comparison exploration explanation timeLine", "4View  comparison exploration explanation timeLine",
+                          "4View explanation", "4View explanation", "4View explanation timeLine", "4View comparison timeLine", "4View comparison timeLine square", "4View comparison timeLine square", "4View comparison timeLine square",
+                          "4View explanation timeLine square", "4View explanation timeLine", "4View explanation square", "4View comparison square", "4View comparison square", "4View comparison square", "4View comparison",
+
+                          "5View comparison exploration explanation square", "5View comparison exploration explanation square", "5View comparison exploration explanation", "5View comparison exploration explanation", "5View comparison exploration explanation", "5View comparison exploration explanation timeLine", "5View comparison exploration explanation timeLine",
+                          "5View comparison exploration explanation timeLine", "5View comparison exploration explanation timeLine", "5View comparison exploration explanation timeLine", "5View comparison exploration explanation timeLine", "5View comparison exploration explanation timeLine", "5View comparison exploration explanation timeLine", "5View comparison exploration explanation timeLine",
+
+                          "6View comparison exploration explanation", "6View comparison exploration explanation",
+
+                          "8View comparison exploration explanation", "8View comparison exploration explanation",
+
+                          "9View exploration explanation square",
+
+
+
+
+                          // , "1View exploration square", "2View exploration", "2View exploration timeLine", "3View explanation",
+                          // "3View explanation square", "3View explanation square", "3View comparison timeLine",
+                          // "3View comparison timeLine square", "3View comparison timeLine square"
+                          // , "1View exploration square", "2View exploration", "2View exploration timeLine", "3View explanation",
+                          // "3View explanation square", "3View explanation square", "3View comparison timeLine",
+                          // "3View comparison timeLine square", "3View comparison timeLine square"
+                          // , "1View exploration square", "2View exploration", "2View exploration timeLine", "3View explanation",
+                          // "3View explanation square", "3View explanation square", "3View comparison timeLine",
+                          // "3View comparison timeLine square", "3View comparison timeLine square"
+                          // , "1View exploration square", "2View exploration", "2View exploration timeLine", "3View explanation",
+                          // "3View explanation square", "3View explanation square", "3View comparison timeLine",
+                          // "3View comparison timeLine square", "3View comparison timeLine square"
+                          // , "1View exploration square", "2View exploration", "2View exploration timeLine", "3View explanation",
+                          // "3View explanation square", "3View explanation square", "3View comparison timeLine",
+                          // "3View comparison timeLine square", "3View comparison timeLine square"
+   ];
+   var layoutClicked= false;
+   var layoutClickedId= "";
+   var creatLayListOpt= "TextEditor";
+   var visTasListOpt= "allLayouts";
+   var viewTypListOpt= "allViews";
+   var numofViewListOpt= "unspecified";
+   var layoHeigOpt= "100";
+   var layoWidtOpt= "100";
+   var categoriesId= "";
+   var clickedCategoryId= "allLayouts";
+   var fixedLayoutStatus = true;
+   $(function () {
+
+     $('.layout').on('click', function(e){ // Generate-Layout-by-New Grammar button
+        e.preventDefault();
+        $('.layout').css("boxShadow", "0px 0px 0px 0px red");
+        if ((layoutClicked == true) &&  (layoutClickedId == $(this).get(0).id)) {
+          layoutClicked= false;
+          layoutClickedId= "";
+        } else {
+          layoutClicked= true;
+          layoutClickedId= $(this).get(0).id;
+          $(this).css("boxShadow", "0px 0px 10px 0px #ed7c36");
+        }
+     });
+
+     $('.layout').on('dblclick', function(e){ // Generate-Layout-by-New Grammar button
+        e.preventDefault();
+        layoutClicked= true;
+        layoutClickedId= $(this).get(0).id;
+        newLayoInSecoScre();
+     });
+
+     $('#fixedLayout').on('change', function() {
+       if ($(this).is(':checked')) {
+         fixedLayoutStatus = $(this).is(':checked');
+         $('#basicFixedLayout').attr('checked', true);
+       } else {
+         fixedLayoutStatus = $(this).is(':checked');
+         $('#basicFixedLayout').attr('checked', false);
+       }
+     });
+     $('#basicFixedLayout').on('change', function() {
+       if ($(this).is(':checked')) {
+         fixedLayoutStatus = $(this).is(':checked');
+       } else {
+         fixedLayoutStatus = $(this).is(':checked');
+       }
+     });
+
+     $('#visTasList').on('change', function() {
+       $('.categories').css("color", "black");
+       clickedCategoryId= "";
+       $('.layout').css("boxShadow", "0px 0px 0px 0px red");
+       layoutClicked= false;
+       layoutClickedId= "";
+       visTasListOpt= $('#visTasList').val();
+       $('.layout').css('display', 'none');
+       classNames= '.' + visTasListOpt + '.' + viewTypListOpt + '.' + numofViewListOpt;
+       $(classNames).css('display', 'block');
+     });
+     $('#creatLayList').on('change', function() {
+       creatLayListOpt= $('#creatLayList').val();
+     });
+     $('#viewTypList').on('change', function() {
+       $('.categories').css("color", "black");
+       clickedCategoryId= "";
+       $('.layout').css("boxShadow", "0px 0px 0px 0px red");
+       layoutClicked= false;
+       layoutClickedId= "";
+       viewTypListOpt= $('#viewTypList').val();
+       $('.layout').css('display', 'none');
+       classNames= '.' + visTasListOpt + '.' + viewTypListOpt + '.' + numofViewListOpt;
+       $(classNames).css('display', 'block');
+     });
+     $('#numofViewList').on('change', function() {
+       $('.categories').css("color", "black");
+       clickedCategoryId= "";
+       $('.layout').css("boxShadow", "0px 0px 0px 0px red");
+       layoutClicked= false;
+       layoutClickedId= "";
+       numofViewListOpt= $('#numofViewList').val();
+       $('.layout').css('display', 'none');
+       classNames= '.' + visTasListOpt + '.' + viewTypListOpt + '.' + numofViewListOpt;
+       $(classNames).css('display', 'block');
+     });
+
+     $('#layotHieh').on('change', function() {
+       layoHeigOpt= $('#layotHieh').val();
+     });
+     $('#layotWidt').on('change', function() {
+       layoWidtOpt= $('#layotWidt').val();
+     });
+
+     var isAppearHeigOptChange= false;
+     var isAppearWidtOptChange= false;
+
+     $('#basicLayotHieh').on('change', function() {
+       layoHeigOpt= $('#basicLayotHieh').val();
+       isAppearHeigOptChange= true;
+       // $("#panel").css('height', layoHeigOpt + '%');
+       // هنا يجب اعادة اسناد الارتفاع
+     });
+
+     $('#basicLayotWidt').on('change', function() {
+       layoWidtOpt= $('#basicLayotWidt').val();
+       isAppearWidtOptChange= true;
+       // $("#panel").css('width', layoWidtOpt + '%');
+       // هنا يجب اعادة اسناد عرض ال layout
+     });
+
+     $('.categories').on('click', function(e){ // Show Layout by category
+        e.preventDefault();
+        categoriesId= $(this).get(0).id;
+        clickedCategoryId= $(this).get(0).id;
+        $('.layout').css('display', 'none');
+        classNames= '.' + categoriesId;
+        $(classNames).css('display', 'block');
+        $('.categories').css('color', 'black');
+        $(this).css('color', '#ed7c36');
+        if ( (clickedCategoryId == "exploration") || (clickedCategoryId == "explanation") || (clickedCategoryId == "comparison") ){
+          $('#visTasList').val(clickedCategoryId);
+          $('#viewTypList').val("allViews");
+          $('#numofViewList').val("unspecified");
+          visTasListOpt= clickedCategoryId;
+          viewTypListOpt= "allViews";
+          numofViewListOpt= "unspecified";
+        } else if ( (clickedCategoryId == "timeLine") || (clickedCategoryId == "square") ) {
+          $('#visTasList').val("allLayouts");
+          $('#viewTypList').val(clickedCategoryId);
+          $('#numofViewList').val("unspecified");
+          visTasListOpt= "allLayouts";
+          viewTypListOpt= clickedCategoryId;
+          numofViewListOpt= "unspecified";
+        } else if ( (clickedCategoryId == "1View") || (clickedCategoryId == "2View") || (clickedCategoryId == "3View") ) {
+          $('#visTasList').val("allLayouts");
+          $('#viewTypList').val("allViews");
+          $('#numofViewList').val(clickedCategoryId);
+          visTasListOpt= "allLayouts";
+          viewTypListOpt= "allViews";
+          numofViewListOpt= clickedCategoryId;
+        } else {
+          $('#visTasList').val("allLayouts");
+          $('#viewTypList').val("allViews");
+          $('#numofViewList').val("unspecified");
+          visTasListOpt= "allLayouts";
+          viewTypListOpt= "allViews";
+          numofViewListOpt= "unspecified";
+        }
+     });
+     $('.categories').on('mouseover', function(e){
+         $(this).css("color", "#ed7c36");
+     });
+     $('.categories').on('mouseleave', function(e){
+       if ( (clickedCategoryId != $(this).get(0).id) || (clickedCategoryId == ""))  {
+         $(this).css("color", "black");
+       }
+     }); // End show Layout by category
+
+
+     $('.toolBar').on('mouseover', function(e){  // toolBar click and hover
+         $(this).css("color", "#ed7c36");
+     });
+     $('.toolBar').on('mouseleave', function(e){
+       $(this).css("color", "black");
+     }); // End toolBar click and hover
+
+     $('#openFileSpan').on('mouseover', function(e){  // openFileSpan hover
+         $('#openFileSpan').css("color", "#ed7c36");
+     });
+     $('#openFileSpan').on('mouseleave', function(e){
+       $('#openFileSpan').css("color", "black");
+     }); // End openFileSpan hover
+   });
+   function newLayoInSecoScre() {
+     layoHeigOpt= parseInt(layoHeigOpt);
+     layoWidtOpt= parseInt(layoWidtOpt);
+     var x = document.getElementById("firstScreen");
+     x.style.display = "none";
+     var x = document.getElementById("secondScreen");
+     x.style.display = "block";
+     var layoutJSON = $('#editorVizsJson').text();
+     var layoutObj = JSON.parse(layoutJSON);
+     if (layoHeigOpt != layoWidtOpt) {
+       if (layoHeigOpt > layoWidtOpt) {
+         layoWidtOpt= Math.round((layoWidtOpt/ layoHeigOpt)* 100);
+         layoutObj.laySize.height= "100%";
+         layoutObj.laySize.width= layoWidtOpt+ "%";
+         layoHeigOpt= 100;
+       } else {
+         layoHeigOpt= Math.round((layoHeigOpt/ layoWidtOpt)* 100);
+         layoutObj.laySize.height= layoHeigOpt+ "%";
+         layoutObj.laySize.width= "100%";
+         layoWidtOpt= 100;
+       }
+     } else {
+       layoWidtOpt= 100;
+       layoHeigOpt= 100;
+       layoutObj.laySize.height= "100%";
+       layoutObj.laySize.width= "100%";
+     }
+     $('#basicLayotWidt').attr('value', layoWidtOpt);
+     $('#basicLayotHieh').attr('value', layoHeigOpt);
+     $("#panel").css('width', layoutObj.laySize.width);
+     $("#panel").css('height', layoutObj.laySize.height);
+     var pAW = $('#panelArea').width();
+     var pAH = $('#panelArea').height();
+     var wP = $('#panel').width();
+     var hP = $('#panel').height();
+     $('#panel').css({'left':((pAW - wP)/ 2)+'px'});
+     $('#panel').css({'top':((pAH - hP)/ 2)+'px'});
+     $('#editorVizsJson').text(JSON.stringify(layoutObj, null, 3));
+     $('#editorVizsJson').each(function(i, block) {
+        hljs.highlightBlock(block);
+     });
+     setPanelAreaSize();
+     // updateTexEdi(); // Update TextEditor with first Viz info when page start upload
+     if (layoutClicked) {
+       // fixedLayoutStatus = true;
+       tNewVizIndex= 0;
+       var nodeID = $("#tLayComp");
+       var children = $("#jstree").jstree(true).get_node(nodeID).children;
+       $("#jstree").jstree(true).delete_node(children);
+       var grammarFromArry= GrammarSet[parseInt(layoutClickedId)];
+       $('#grammarEditor').text("Expr:"+grammarFromArry+";");
+       layFromNewGrammar();
+       // if (fixedLayoutStatus == true) {
+       //   var contents = $('.vis-container');
+       //   var vizsNumber = contents.size();
+       //   for (var i = 0; i < vizsNumber; i++)  {
+       //     var idp=$("#panel");
+       //     $("#"+contents[i].id).resizable('destroy');
+       //     $("#"+contents[i].id).draggable('destroy');
+       //   }
+       // } else {
+       //   var contents = $('.vis-container');
+       //   var vizsNumber = contents.size();
+       //   for (var i = 0; i < vizsNumber; i++)  {
+       //     var divId2="#"+contents[i].id;
+       //     $( divId2 ).draggable({
+       //         stop: function() {
+       //            var $el = $(divId2);
+       //            var pos = $el.position();
+       //            var widthStep= $("#panel").outerWidth(false) / 100;
+       //            var heightStep= $("#panel").outerHeight(false) / 100;
+       //
+       //            if (pos.left < 0) {
+       //              pos.left= 0;
+       //            }
+       //            if (pos.top < 0) {
+       //              pos.top= 0;
+       //            }
+       //            $(divId2).css({
+       //                left: ( (Math.round(pos.left / widthStep) * widthStep) / $("#panel").outerWidth(false) )  * 100 + '%',
+       //                top: ( (Math.round(pos.top / heightStep) * heightStep) / $("#panel").outerHeight(false) )  * 100 + '%',
+       //            });
+       //         }
+       //     });
+       //     $(divId2).resizable({
+       //       handles: "n, e, s, w, ne, nw, se, sw",
+       //       stop: function() {
+       //         var $el = $(divId2);
+       //         var pos = $el.position();
+       //         var widthStep= $("#panel").outerWidth(false) / 100;
+       //         var heightStep= $("#panel").outerHeight(false) / 100;
+       //         if (pos.left < 0) {
+       //           pos.left= 0;
+       //         }
+       //         if (pos.top < 0) {
+       //           pos.top= 0;
+       //         }
+       //         $(divId2).css({
+       //            width: ( (Math.round($(divId2).outerWidth(false) / widthStep) * widthStep) / $("#panel").outerWidth(false)) * 100 + '%',
+       //            height: ( (Math.round($(divId2).outerHeight(false) / heightStep) * heightStep) / $("#panel").outerHeight(false)) * 100 + '%',
+       //            height: $(divId2).outerHeight(false) / $("#panel").outerHeight(false) * 100 + '%',
+       //            left: ( (Math.round(pos.left / widthStep) * widthStep) / $("#panel").outerWidth(false) )  * 100 + '%',
+       //            top: ( (Math.round(pos.top / heightStep) * heightStep) / $("#panel").outerHeight(false) )  * 100 + '%',
+       //         });
+       //         $(divId2).css({ zIndex: '3' });
+       //         $(divId2).css({boxShadow:"0px 0px 10px 0px red inset"});
+       //       }
+       //     });
+       //   }
+       // }
+       describeViz();
+       var contents = $('.vis-container');
+       var vizsNumber = contents.size();
+       if (vizsNumber==0){
+         counter= 0;
+       }
+       updateTexEdi();
+     } else {
+       addNewViz();    // Add first Viz when page start upload
+       updateTexEdi(); // Update TextEditor with first Viz info when page start upload
+     }
+
+     creatVisualJsonNewLayot();
+     var VisualObj = JSON.parse(VisualJSON);
+     console.log(VisualObj);
+   }
+   function creatThumbnails() {
+     for (var i = 0; i < GrammarSet.length; i++) {
+       var classText= "layout allLayouts unspecified allViews " + GrammarClassSet[i];
+       var id = i + "";
+       $("#newLayoutAreaCode").append('<div id="div"></div>');
+       $("#div").attr('id', id);
+       $('#' + id).addClass( classText );
+       var divId="#"+id;
+       var grammarText= GrammarSet[i];
+       thumbnailsByGrammar(divId, grammarText.replace(/\s/g, ''), 80, 80, 0 ,0);
+     }
+   }
+   function thumbnailsByGrammar (parentDiv, gramText, height, width, top, left) {
+         var argums= [];
+         var length= 0;
+         var numCutStr="";
+         var typeCutStr="";
+         var ch0= "";
+         var ch1= "";
+         var ch2= "";
+         var ch3= "";
+         var tex= "";
+         var st= "";
+         var numIndex= -1;
+         var indxInArg= 0;
+         var argNum="";
+         var h, w, t, l= "";
+         var hArray, wArray, tArray, lArray= [];
+         var sum= 0;
+         var argLength=0;
+         var numInArg= [];
+         var strInArg= "";
+         var tem= 0;
+         var strPart= "";
+         var numbPart= 0;
+         var zeroNumInArg= 0;
+         var sumExceptLast= 0;
+         if (!isNaN(Number(gramText))) {
+           ch1= gramText;
+         } else if ((gramText.length >= 3) || ( (gramText.length == 1) && ((gramText == "v") || (gramText == "V") || (gramText == "h") || (gramText == "H")) ) ) {
+           if ( (gramText.length == 1) && ((gramText == "v") || (gramText == "V") || (gramText == "h") || (gramText == "H")) ) {
+             ch1= gramText.substring(0, 1);
+             ch2= "(";
+             ch3= ")";
+             tex= ",";
+           } else {
+             ch1= gramText.substring(0, 1);
+             ch2= gramText.substring(1, 2);
+             ch3= gramText.substring(gramText.length-1, gramText.length);
+             tex= gramText.substring(2, gramText.length-1);
+           }
+           argums= findArguments(tex);
+           length= argums.length;
+           if (tex == "") {
+             length= 0;
+           }
+           if (length > 1) {
+             zeroNumInArg= 0;
+             for (var i = 0; i < length; i++) {
+               if (!isNaN(Number(argums[i]))) {
+                 numInArg.push(numbInArgums(argums[i]));
+                 if (numInArg[i] == "0") {
+                   zeroNumInArg= zeroNumInArg + 1;
+                 }
+                 sum= sum + Number(numInArg[i])
+               } else {
+                 numInArg.push(numbInArgums(argums[i]));
+                 if (numInArg[i] == "0") {
+                   zeroNumInArg= zeroNumInArg + 1;
+                 }
+                 sum= sum + Number(numInArg[i])
+               }
+             }
+             if (zeroNumInArg == 0) {
+               if (sum != 100)  {
+                 for (var i = 0; i < length; i++) {
+                   if (!isNaN(Number(argums[i]))) {
+                     tem= numInArg[i] / sum;
+                     argums[i]= (tem.toFixed(2) * 100) + "";
+                   } else {
+                     strInArg= stringInArgums(argums[i]);
+                     tem= numInArg[i] / sum;
+                     argums[i]= (tem.toFixed(2) * 100) + strInArg;
+                   }
+                 }
+               }
+             } else if (zeroNumInArg < length) {
+               tem= (100 - sum) / zeroNumInArg;
+               for (var i = 0; i < length; i++) {
+                 if (!isNaN(Number(argums[i]))) {
+                   if (numInArg[i] == "0") {
+                     argums[i]= tem.toFixed(2) + "";
+                   }
+                 } else {
+                   if (numInArg[i] == "0") {
+                     strInArg= stringInArgums(argums[i]);
+                     argums[i]= tem.toFixed(2) + strInArg;
+                   }
+                 }
+               }
+
+             } else if ((zeroNumInArg == length)) {
+               tem= 100 / length;
+               for (var i = 0; i < length; i++) {
+                 if (!isNaN(Number(argums[i]))) {
+                   argums[i]= tem.toFixed(2) + "";
+                 } else {
+                   strInArg= stringInArgums(argums[i]);
+                   argums[i]= tem.toFixed(2) + strInArg;
+                 }
+               }
+             }
+             sum= 0;
+             numInArg=[];
+             sumExceptLast= 0;
+             for (var i = 0; i < length; i++) {
+               numInArg.push(numbInArgums(argums[i]));
+               if (i == length-1) {
+                 sumExceptLast= sum
+               }
+               sum= sum + Number(numInArg[i]);
+             }
+             if (sum != 100)  {
+               tem= 100 - sumExceptLast;
+               if (!isNaN(Number(argums[length-1]))) {
+                   argums[length-1]= tem + "";
+                 } else {
+                   strInArg= stringInArgums(argums[length-1]);
+                   argums[length-1]= tem + strInArg;
+                 }
+               }
+           } else if (length == 1) {
+             if (isNaN(Number(argums[0]))) {
+               strPart= stringInArgums(argums[0]);
+               numbPart= numbInArgums(argums[0]);
+               if ( (numbPart < 100) && (numbPart > 1) ) {
+                 argums.push( (100 - numbPart) + "" );
+               } else {
+                 argums.pop();
+                 argums.push( "50" + strPart );
+                 argums.push( "50" );
+               }
+             } else if ( (argums[0] < 100) && (argums[0] > 1) ) {
+               argums.push( (100 - argums[0]) + "" );
+             } else {
+               argums.pop();
+               argums.push( "50" );
+               argums.push( "50" );
+             }
+           } else if (length == 0) {
+             argums.push( "50" );
+             argums.push( "50" );
+           }
+           length= argums.length;
+         }
+         if ( ((ch1 == "v") || (ch1 == "V")) && (ch2 == "(") && (ch3 == ")") && (length >= 1)) {
+           h= height;
+           t= top;
+           wArray = [];
+           for (var i = 0; i < length; i++) {
+             numCutStr= "";
+             st= "";
+             st= argums[i];
+             indxInArg= 0;
+             argLength= st.length;
+             if ( (st.length > 0) && (!isNaN(Number(st[0])))) {
+               while  (indxInArg < argLength) {
+                 if ( (st[indxInArg] <"0") || (st[indxInArg] >"9") ) {
+                   indxInArg= indxInArg - 1;
+                   break
+                 }
+                 numCutStr= numCutStr + st[indxInArg];
+                 indxInArg= indxInArg + 1;
+               }
+               if ((indxInArg+1 < argLength) && (st[indxInArg+1] == ".")){
+                 indxInArg= indxInArg + 1; // .
+                 if ((indxInArg+1 < argLength) && (!isNaN(Number(st[indxInArg+1])))) {
+                   numCutStr= numCutStr + st[indxInArg] + st[indxInArg+1];
+                   indxInArg= indxInArg + 1;
+                   if ((indxInArg+1 < argLength) && (!isNaN(Number(st[indxInArg+1])))) {
+                     numCutStr= numCutStr + st[indxInArg+1];
+                     indxInArg= indxInArg + 1;
+                   }
+                   if ((indxInArg+1 < argLength) && (!isNaN(Number(st[indxInArg+1])))) { // Ignore everything else
+                     indxInArg= indxInArg + 1;
+                   }
+                 }
+               }
+            }
+            wArray[i]= (Number(numCutStr) * width) / 100 ;
+           }
+           for (var i = 0; i < length; i++) {
+             w= 0;
+             for (var j = 0; j < i; j++) {
+               w= w + wArray[j];
+             }
+             l= left + w;
+             if (isNaN(Number(argums[i]))) {
+               if (!isNaN(Number(argums[i].substring(0, 5)))) {
+                 argums[i]= argums[i].substring(5, argums[i].length);
+               } else if (!isNaN(Number(argums[i].substring(0, 4)))) {
+                 argums[i]= argums[i].substring(4, argums[i].length);
+               } else if (!isNaN(Number(argums[i].substring(0, 3)))) {
+                 argums[i]= argums[i].substring(3, argums[i].length);
+               } else if (!isNaN(Number(argums[i].substring(0, 2)))) {
+                 argums[i]= argums[i].substring(2, argums[i].length);
+               } else if (!isNaN(Number(argums[i].substring(0, 1)))) {
+                 argums[i]= argums[i].substring(1, argums[i].length);
+               } else {
+                 argums[i]= argums[i].substring(0, argums[i].length);
+               }
+             }
+             thumbnailsByGrammar(parentDiv, argums[i], h, wArray[i], t, l)
+           }
+         } else if ( ((ch1 == "h") || (ch1 == "H")) && (ch2 == "(") && (ch3 == ")") && (length >= 1)) {
+           w= width;
+           l= left;
+           hArray = [];
+           for (var i = 0; i < length; i++) {
+             numCutStr= "";
+             st= "";
+             st= argums[i];
+             indxInArg= 0;
+             argLength= st.length;
+             if ( (st.length > 0) && (!isNaN(Number(st[0])))) {
+               while  (indxInArg < argLength) {
+                 if ( (st[indxInArg] <"0") || (st[indxInArg] >"9") ) {
+                   indxInArg= indxInArg - 1;
+                   break
+                 }
+                 numCutStr= numCutStr + st[indxInArg];
+                 indxInArg= indxInArg + 1;
+               }
+               if ((indxInArg+1 < argLength) && (st[indxInArg+1] == ".")){
+                 indxInArg= indxInArg + 1;
+                 if ((indxInArg+1 < argLength) && (!isNaN(Number(st[indxInArg+1])))) {
+                   numCutStr= numCutStr + st[indxInArg] + st[indxInArg+1];
+                   indxInArg= indxInArg + 1;
+                   if ((indxInArg+1 < argLength) && (!isNaN(Number(st[indxInArg+1])))) {
+                     numCutStr= numCutStr + st[indxInArg+1];
+                     indxInArg= indxInArg + 1;
+                   }
+                   if ((indxInArg+1 < argLength) && (!isNaN(Number(st[indxInArg+1])))) { // Ignore everything else
+                     indxInArg= indxInArg + 1;
+                   }
+                 }
+               }
+            }
+            hArray[i]= (Number(numCutStr) * height) / 100 ;
+           }
+           for (var i = 0; i < length; i++) {
+             h= 0;
+             for (var j = 0; j < i; j++) {
+               h= h + hArray[j];
+             }
+             t= top + h;
+             if (isNaN(Number(argums[i]))) {
+               if (!isNaN(Number(argums[i].substring(0, 5)))) {
+                 argums[i]= argums[i].substring(5, argums[i].length);
+               } else if (!isNaN(Number(argums[i].substring(0, 4)))) {
+                 argums[i]= argums[i].substring(4, argums[i].length);
+               } else if (!isNaN(Number(argums[i].substring(0, 3)))) {
+                 argums[i]= argums[i].substring(3, argums[i].length);
+               } else if (!isNaN(Number(argums[i].substring(0, 2)))) {
+                 argums[i]= argums[i].substring(2, argums[i].length);
+               } else if (!isNaN(Number(argums[i].substring(0, 1)))) {
+                 argums[i]= argums[i].substring(1, argums[i].length);
+               } else {
+                 argums[i]= argums[i].substring(0, argums[i].length);
+               }
+             }
+             thumbnailsByGrammar(parentDiv, argums[i], hArray[i], w, t, l)
+           }
+         } else if ((!isNaN(Number(ch1))) && (Number(ch1) > 0) && (ch2 == "") && (ch3 == "")) {
+           if (Number(ch1) > 100) {
+             ch1= "100";
+           }
+           addNewViz_thumbnails(parentDiv, top, left, width, height);
+         } else {
+         }
+   }
+   function addNewViz_thumbnails(parentDiv, top, left, width, height){ // Add new Viz to the layout
+     $(parentDiv).append('<div class="thumbnails" style="height:'+height+'px; width:'+width+'px; top:'+top+'px ; left:'+left+'px"></div>');
+   }
+ </script>
+ <script type="text/javascript">// JS Tree
+   var tNewVizIndex= 1;
+   $(function () {
+     $('#jstree').jstree({
+       'core': {
+         "check_callback" : true,
+           'themes': {
+               'name': 'proton',
+               'responsive': true
+           },
+           "state":{"opened":true}
+       }
+     });
+     // tLayout tLayComp tVis
+     $('#jstree').on("changed.jstree", function (e, data) {
+       var treeNode=data.selected + "";
+       var index= 0;
+       if ( (treeNode.substring(4, 5) != "C") && ((treeNode.substring(4, 5) == "o") || (treeNode.substring(4, 5) == "D") || (treeNode.substring(4, 5) == "T") ) ){
+         // console.log(treeNode);
+         if (treeNode == 'tLayout') {
+           // JSON هنايتم ترتيب ال
+           var jSON = $('#editorTLayout').text();
+           var obj = JSON.parse(jSON);
+           $('#editorTLayout').text("");
+           $('#editorTLayout').text(JSON.stringify(obj, null, 3));
+           $('#editorTLayout').each(function(i, block) {
+              hljs.highlightBlock(block);
+           });
+
+           // document.getElementById("appearPanelBG").value =  $('#panel').css("background-color");
+           // document.getElementById("appearPanelBG").value = document.getElementById("panel").style.backgroundColor;
+           // $.cssHooks.backgroundColor = {
+           //     get: function(panel) {
+           //         if (panel.currentStyle)
+           //             var backG = panel.currentStyle["background-color"];
+           //         else if (window.getComputedStyle)
+           //             var backG = document.defaultView.getComputedStyle(panel,
+           //                 null).getPropertyValue("background-color");
+           //         if (backG.search("rgb") == -1)
+           //             return backG;
+           //         else {
+           //             backG = backG.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+           //             function hex(x) {
+           //                            return ("0" + parseInt(x).toString(16)).slice(-2);
+           //             }
+           //             return "#" + hex(backG[1]) + hex(backG[2]) + hex(backG[3]);
+           //         }
+           //     }
+           // }
+           // if (/^#[0-9A-F]{6}$/i.test(rgb)) return rgb;
+           // document.getElementById("appearPanelBG").value = $("#panel").css("backgroundColor");
+           appearTab(treeNode, 'tLayoutDiv');
+
+         } else if (treeNode.substring(0, 8) == 'tVizData') {
+           var treeNodeNameLenth= treeNode.length;
+           $("#treeDataVizNumb").text(treeNode.substring(8, treeNodeNameLenth));
+           visDataSetTo= parseInt(treeNode.substring(8, treeNodeNameLenth));
+           // console.log(visDataSetTo);
+           appearTab(treeNode, 'vizData');
+         } else if (treeNode.substring(0, 8) == 'tVizTech') {
+
+
+           var treeNodeNameLenth= treeNode.length;
+           $("#treeVizTechNumb").text(treeNode.substring(8, treeNodeNameLenth));
+           visTechSetTo= parseInt(treeNode.substring(8, treeNodeNameLenth));
+           // JSON هنايتم ترتيب ال
+           // var jSON = VisualJSON;
+           var VisualObj = JSON.parse(VisualJSON);
+           // console.log(visTechSetTo-1);
+           // console.log(VisualObj.visual[visTechSetTo-1]);
+           $('#editorvizTechJson').text("");
+           $('#editorvizTechJson').text(JSON.stringify(VisualObj.visual[visTechSetTo-1], null, 3));
+           $('#editorvizTechJson').each(function(i, block) {
+              hljs.highlightBlock(block);
+           });
+
+
+           appearTab(treeNode, 'vizTech');
+         }
+         // else if (treeNode.substring(0, 10) == 'tVizAppear') {
+         //   appearTab(treeNode, 'vizAppear');
+         // }
+       }
+     });
+   });
+   function creatNod() {
+      tNewVizIndex+= 1;
+      var position = 'last';
+      var parent = 'tLayComp';
+      var tNewVizId= "tViz" + tNewVizIndex;
+      var tNewVizText= "Viz" + tNewVizIndex;
+      var tNewVizDataId= "tVizData" + tNewVizIndex;
+      var tNewVizTechId= "tVizTech" + tNewVizIndex;
+      // var tNewVizAppearId= "tVizAppear" + tNewVizIndex;
+      var tVizdataClass= "tVizData";
+      var tVizTechClass= "tVizTech";
+      // var tVizAppearClass= "tVizAppear";
+      $('#jstree').jstree(true).create_node(parent, {"id" : tNewVizId, "text" : tNewVizText, "icon" : "LayoutIconBlue.png"}, position
+                                            , function(){$('#' + tNewVizId).addClass( "tVis" );}, true);
+      $('#jstree').jstree(true).create_node(tNewVizId, {"id" : tNewVizDataId, "text" : "Data", "icon" : "Dot.png"  }, position, function(){}, true);
+      $('#jstree').jstree(true).create_node(tNewVizId, {"id" : tNewVizTechId, "text" : "Visualisation", "icon" : "Dot.png"}, position
+                                            , function() {$('#' + tNewVizId).addClass( "tVis" ); $("#jstree").jstree("open_node", $('#' + tNewVizId));}, true);
+
+      // $('#jstree').jstree(true).create_node(tNewVizId, {"id" : tNewVizAppearId, "text" : "Appearance", "icon" : "Dot.png"  }, position
+      //                                       , function() {$('#' + tNewVizId).addClass( "tVis" ); $("#jstree").jstree("open_node", $('#' + tNewVizId));}, true);
+   }
+
+   function grammarTab(evt, tabName) {  // JSTree Tabs
+     var i, tabcontent, tablinks;
+     tabcontent = document.getElementsByClassName("tabcontent");
+     for (i = 0; i < tabcontent.length; i++) {
+         tabcontent[i].style.display = "none";
+     }
+     tablinks = document.getElementsByClassName("tablinks");
+     for (i = 0; i < tablinks.length; i++) {
+         tablinks[i].className = tablinks[i].className.replace(" active", "");
+     }
+     document.getElementById(tabName).style.display = "block";
+     evt.currentTarget.className += " active";
+   }
+
+   function appearTab(selectedLeaf, tabName) {
+     var tabAppearcontent;
+     tabAppearcontent = document.getElementsByClassName("tabAppearcontent");
+     for (var i = 0; i < tabAppearcontent.length; i++) {
+         tabAppearcontent[i].style.display = "none";
+     }
+     document.getElementById(tabName).style.display = "block";
+     // document.getElementById(tabName).innerHTML = selectedLeaf;
+   }
+
+   // function myFunction() {
+   //   var x = document.getElementById("myText").value;
+   //   document.getElementById("demo").innerHTML = x;
+   // }
+
+   // function myFunction() {
+   //   var x = document.createElement("INPUT");
+   //   x.setAttribute("type", "text");
+   //   x.setAttribute("value", "Hello World!");
+   //   document.body.appendChild(x);
+   // }
+   // document.getElementById("myText").placeholder = "Type name here..";
+ </script>
+ <script type="text/javascript">// Case Study1
+    var data1 = [190, 210, 230, 250, 270, 290, 310, 330, 350, 370];
+     var data2 = [80, 100, 140, 160, 200, 240, 280, 320, 360, 400];
+     var data3 = [400, 360, 320, 280, 240, 200, 160, 140, 100, 80];
+     var data4 = [80, 100, 140, 160, 200, 240, 280, 320, 360, 400];
+     var data5 = [400, 360, 320, 280, 240, 200, 160, 140, 100, 80];
+     var data6 = [190, 210, 230, 250, 270, 290, 310, 330, 350, 370];
+     var data7 = [400, 360, 320, 280, 240, 200, 160, 140, 100, 80];
+     var data8 = [80, 100, 140, 160, 200, 240, 280, 320, 360, 400];
+     var data9 = [400, 360, 320, 280, 240, 200, 160, 140, 100, 80];
+     var data10 = [190, 210, 230, 250, 270, 290, 310, 330, 350, 370];
+     var data11 = [];
+     var data12 = [];
+     var data13 = [];
+     var data14 = [];
+     var data15 = [];
+     var data16 = [];
+     var data17 = [];
+     var data18 = [];
+     var data19 = [];
+     var data20 = [];
+     var data21 = [];
+     var data22 = [];
+     var data23 = [];
+     var data24 = [];
+     var data25 = [];
+     var data26 = [];
+     var data27 = [];
+     var data28 = [];
+     var data29 = [];
+     var data30 = [];
+     var data31 = [];
+     var data32 = [];
+     var data33 = [];
+     var data34 = [];
+     var data35 = [];
+     var data36 = [];
+     var data37 = [];
+     var data38 = [];
+     var data39 = [];
+     var data40 = [];
+     var data41 = [];
+     var data42 = [];
+     var data43 = [];
+     var data44 = [];
+     var data45 = [];
+     var data46 = [];
+     var data47 = [];
+     var data48 = [];
+     var data49 = [];
+     var data50 = [];
+     var data51 = [];
+     var data52 = [];
+     var data53 = [];
+     var data54 = [];
+     var data55 = [];
+     var data56 = [];
+     var data57 = [];
+     var data58 = [];
+     var data59 = [];
+    var data60 = [];
+
+    function addVizTech (){
+      var layoutJSON = $('#editorVizsJson').text();
+      var layoutObj = JSON.parse(layoutJSON);
+      var vis = layoutObj.layout;
+      var contents = $('.vis-container');
+      var vizsNumber = contents.size();
+      var max = 400;
+      var currentData = "data1";
+      var currentTech = "Barchart";
+      // console.log(data1);
+      // console.log(data2);
+
+      for (var i = 0; i < vizsNumber; i++)  {
+        contents[i].innerHTML="";
+        currentData = (eval(vis.data[i]))? vis.data[i] : currentData;
+        currentTech = (vis.vizTech[i])? vis.vizTech[i] : currentTech;
+
+        d3.select("#"+contents[i].id)
+          .selectAll("div")
+          .remove();    // Remove divs contain
+
+        var scaleWidth = d3.scaleLinear()
+          .domain([0, d3.max(eval(currentData))])
+          .range([0, contents[i].offsetWidth]);
+        var scaleCX = d3.scaleLinear()
+          .domain([0, d3.max(eval(currentData))])
+          .range([30, contents[i].offsetWidth-30])
+
+        $("#"+contents[i].id).resizable();
+        $("#"+contents[i].id).resizable('destroy');
+
+        if (currentTech == "BarChart"){
+          d3.select("#"+contents[i].id).style("background-color", "white");
+          d3.select("#"+contents[i].id)
+            .selectAll("div").data(eval(currentData))
+            .enter().append("div")
+              .style("width", function(d) { return ( (scaleWidth(d) / contents[i].offsetWidth) * 100 + "%"); })
+              .style("height", function(d) { return ((((contents[i].offsetHeight/eval(currentData).length) / contents[i].offsetHeight) * 100) + "%"); })
+              .style("font-size", function(d) { return  ((contents[i].offsetHeight / 40) + "px"); })
+              .style("background", function(d) {  return "#" + d * 2 ; })
+              .text(function(d) { if (contents[i].offsetHeight >= 140) { return d; }});
+          d3.select("#"+contents[i].id).selectAll("div").attr("class", "barChartElem");
+        } else if (currentTech == "tech2") {
+
+          d3.select("#"+contents[i].id).style("background-color", "white");
+          d3.select("#"+contents[i].id).append("svg")
+            .attr("width", (100 + "%"))
+            .attr("height", (100 + "%"))
+            .attr("class","span4");
+            var svg = d3.select("svg");
+            var circle = svg.selectAll("circle")
+               .data(eval(currentData), function(d) { return d; });
+            circle.enter().append("circle")
+               .style("fill", function(d) { return d; })
+               .attr("cy", ((( (contents[i].offsetHeight / 2)  / contents[i].offsetHeight) * 100) + "%"))
+               .attr("cx", function(d) { return ((((scaleCX(d) )  / contents[i].offsetWidth) * 100) + "%"); })
+               .attr("r", function(d) { return Math.sqrt(d); });
+
+        } else {
+          d3.select("#"+contents[i].id).style("background-color", "white");
+          d3.select("#"+contents[i].id)
+            .selectAll("div").data(eval(currentData))
+            .enter().append("div")
+              .style("width", function(d) { return ( (scaleWidth(d) / contents[i].offsetWidth) * 100 + "%"); })
+              .style("height", function(d) { return ((((contents[i].offsetHeight/eval(currentData).length) / contents[i].offsetHeight) * 100) + "%"); })
+              .style("font-size", function(d) { return  ((contents[i].offsetHeight / 40) + "px"); })
+              .style("background", function(d) {  return "#" + d * 2 ; })
+              .text(function(d) { if (contents[i].offsetHeight >= 140) { return d; }});
+          d3.select("#"+contents[i].id).selectAll("div").attr("class", "barChartElem");
+
+        }
+        if (fixedLayoutStatus == false) {
+         $("#"+contents[i].id).resizable({
+          handles: "n, e, s, w, ne, nw, se, sw",
+          stop: function() {
+            var $el = $(this);
+            var pos = $el.position();
+            var widthStep= $("#panel").outerWidth(false) / 100;
+            var heightStep= $("#panel").outerHeight(false) / 100;
+            $(this).css({
+               width: ( (Math.round($(this).outerWidth(false) / widthStep) * widthStep) / $("#panel").outerWidth(false)) * 100 + '%',
+               height: ( (Math.round($(this).outerHeight(false) / heightStep) * heightStep) / $("#panel").outerHeight(false)) * 100 + '%',
+               height: $(this).outerHeight(false) / $("#panel").outerHeight(false) * 100 + '%',
+               left: ( (Math.round(pos.left / widthStep) * widthStep) / $("#panel").outerWidth(false) )  * 100 + '%',
+               top: ( (Math.round(pos.top / heightStep) * heightStep) / $("#panel").outerHeight(false) )  * 100 + '%',
+            });
+            $(this).css({ zIndex: '3' });
+            $(this).css({boxShadow:"0px 0px 5px 0px #D27005 inset"});
+          }
+         });
+        }
+      }
+
+
+      $('#editorVizsJson').text(JSON.stringify(layoutObj, null, 3));
+      $('#editorVizsJson').each(function(i, block) {
+         hljs.highlightBlock(block);
+      });
+    }
+    function addVisuCaseStudy1 (){
+      var layoutJSON = $('#editorVizsJson').text();
+      var layoutObj = JSON.parse(layoutJSON);
+      var vis = layoutObj.layout;
+      var contents = $('.vis-container');
+      var vizsNumber = contents.size();
+      var max = 400;
+      var currentData = "data1";
+      var currentTech = "Barchart";
+      // console.log(data1.length);
+      // console.log(data2);
+
+      for (var i = 0; i < vizsNumber; i++)  {
+        contents[i].innerHTML="";
+        currentData = (eval(vis.data[i]))? vis.data[i] : currentData;
+        currentTech = (vis.vizTech[i])? vis.vizTech[i] : currentTech;
+        d3.select("#"+contents[i].id)
+          .selectAll("div")
+          .remove();    // Remove divs contain
+
+        var scaleWidth = d3.scaleLinear()
+          .domain([0, d3.max(eval(currentData))])
+          .range([0, contents[i].offsetWidth]);
+        var scaleCX = d3.scaleLinear()
+          .domain([0, d3.max(eval(currentData))])
+          .range([30, contents[i].offsetWidth-30])
+
+
+        $("#"+contents[i].id).resizable();
+        $("#"+contents[i].id).resizable('destroy');
+        if (eval(currentData).length < 0) {
+          // console.log(eval(currentData).length);
+          // console.log(eval(currentData));
+
+          if (currentTech == "Barchart"){
+            d3.select("#"+contents[i].id).style("background-color", "black");
+            d3.select("#"+contents[i].id)
+              .selectAll("div").data(eval(currentData))
+              .enter().append("div")
+                .style("width", function(d) { return ( (scaleWidth(d) / contents[i].offsetWidth) * 100 + "%"); })
+                .style("height", function(d) { return ((((contents[i].offsetHeight/eval(currentData).length) / contents[i].offsetHeight) * 100) + "%"); })
+                .style("font-size", function(d) { return  ((contents[i].offsetHeight / 40) + "px"); })
+                .style("background", function(d) {  return "#" + d * 2 ; })
+                .text(function(d) { if (contents[i].offsetHeight >= 140) { return d; }});
+            d3.select("#"+contents[i].id).selectAll("div").attr("class", "barChartElem");
+          } else if (currentTech == "tech2") {
+            d3.select("#"+contents[i].id).style("background-color", "black");
+            d3.select("#"+contents[i].id).append("svg")
+              .attr("width", (100 + "%"))
+              .attr("height", (100 + "%"))
+              .attr("class","span4");
+              var svg = d3.select("svg");
+              var circle = svg.selectAll("circle")
+                 .data(eval(currentData), function(d) { return d; });
+              circle.enter().append("circle")
+                 .style("fill", function(d) { return d; })
+                 .attr("cy", ((( (contents[i].offsetHeight / 2)  / contents[i].offsetHeight) * 100) + "%"))
+                 .attr("cx", function(d) { return ((((scaleCX(d) )  / contents[i].offsetWidth) * 100) + "%"); })
+                 .attr("r", function(d) { return Math.sqrt(d); });
+          } else {
+            d3.select("#"+contents[i].id).style("background-color", "black");
+            d3.select("#"+contents[i].id)
+              .selectAll("div").data(eval(currentData))
+              .enter().append("div")
+                .style("width", function(d) { return ( (scaleWidth(d) / contents[i].offsetWidth) * 100 + "%"); })
+                .style("height", function(d) { return ((((contents[i].offsetHeight/eval(currentData).length) / contents[i].offsetHeight) * 100) + "%"); })
+                .style("font-size", function(d) { return  ((contents[i].offsetHeight / 40) + "px"); })
+                .style("background", function(d) {  return "#" + d * 2 ; })
+                .text(function(d) { if (contents[i].offsetHeight >= 140) { return d; }});
+            d3.select("#"+contents[i].id).selectAll("div").attr("class", "barChartElem");
+          }
+        }
+        if (fixedLayoutStatus == false) {
+         $("#"+contents[i].id).resizable({
+          handles: "n, e, s, w, ne, nw, se, sw",
+          stop: function() {
+            var $el = $(this);
+            var pos = $el.position();
+            var widthStep= $("#panel").outerWidth(false) / 100;
+            var heightStep= $("#panel").outerHeight(false) / 100;
+            $(this).css({
+               width: ( (Math.round($(this).outerWidth(false) / widthStep) * widthStep) / $("#panel").outerWidth(false)) * 100 + '%',
+               height: ( (Math.round($(this).outerHeight(false) / heightStep) * heightStep) / $("#panel").outerHeight(false)) * 100 + '%',
+               height: $(this).outerHeight(false) / $("#panel").outerHeight(false) * 100 + '%',
+               left: ( (Math.round(pos.left / widthStep) * widthStep) / $("#panel").outerWidth(false) )  * 100 + '%',
+               top: ( (Math.round(pos.top / heightStep) * heightStep) / $("#panel").outerHeight(false) )  * 100 + '%',
+            });
+            $(this).css({ zIndex: '3' });
+            $(this).css({boxShadow:"0px 0px 5px 0px #ed7c36 inset"});
+          }
+         });
+        }
+      }
+
+
+      $('#editorVizsJson').text(JSON.stringify(layoutObj, null, 3));
+      $('#editorVizsJson').each(function(i, block) {
+         hljs.highlightBlock(block);
+      });
+    }
+    function casestudy1 (){
+      // console.log("--start--",visData.length-1);
+      for (var i = 1; i <= visData.length-1; i++) {
+        if (i==1) {
+          data1= visData[i];
+         } else if (i==2) {
+          data2= visData[i];
+         } else if (i==3) {
+          data3= visData[i];
+         } else if (i==4) {
+          data4= visData[i];
+         } else if (i==5) {
+          data5= visData[i];
+         } else if (i==6) {
+          data6= visData[i];
+         } else if (i==7) {
+          data7= visData[i];
+         } else if (i==8) {
+          data8= visData[i];
+         } else if (i==9) {
+          data9= visData[i];
+         } else if (i==10) {
+          data10= visData[i];
+         } else if (i==11) {
+          data11= visData[i];
+         } else if (i==12) {
+          data12= visData[i];
+         } else if (i==13) {
+          data13= visData[i];
+         } else if (i==14) {
+          data14= visData[i];
+         } else if (i==15) {
+          data15= visData[i];
+         } else if (i==16) {
+          data16= visData[i];
+         } else if (i==17) {
+          data17= visData[i];
+         } else if (i==18) {
+          data18= visData[i];
+         } else if (i==19) {
+          data19= visData[i];
+         } else if (i==20) {
+          data20= visData[i];
+         } else if (i==21) {
+          data21= visData[i];
+         } else if (i==22) {
+          data22= visData[i];
+         } else if (i==23) {
+          data23= visData[i];
+         } else if (i==24) {
+          data24= visData[i];
+         } else if (i==25) {
+          data25= visData[i];
+         } else if (i==26) {
+          data26= visData[i];
+         } else if (i==27) {
+          data27= visData[i];
+         } else if (i==28) {
+          data28= visData[i];
+         } else if (i==29) {
+          data29= visData[i];
+         } else if (i==30) {
+          data30= visData[i];
+         } else if (i==31) {
+          data31= visData[i];
+         } else if (i==32) {
+          data32= visData[i];
+         } else if (i==33) {
+          data33= visData[i];
+         } else if (i==34) {
+          data34= visData[i];
+         } else if (i==35) {
+          data35= visData[i];
+         } else if (i==36) {
+          data36= visData[i];
+         } else if (i==37) {
+          data37= visData[i];
+         } else if (i==38) {
+          data38= visData[i];
+         } else if (i==39) {
+          data39= visData[i];
+         } else if (i==40) {
+          data40= visData[i];
+         } else if (i==41) {
+          data41= visData[i];
+         } else if (i==42) {
+          data42= visData[i];
+         } else if (i==43) {
+          data43= visData[i];
+         } else if (i==44) {
+          data44= visData[i];
+         } else if (i==45) {
+          data45= visData[i];
+         } else if (i==46) {
+          data46= visData[i];
+         } else if (i==47) {
+          data47= visData[i];
+         } else if (i==48) {
+          data48= visData[i];
+         } else if (i==49) {
+          data49= visData[i];
+         } else if (i==50) {
+          data5= visData[i];
+         } else if (i==51) {
+          data51= visData[i];
+         } else if (i==52) {
+          data52= visData[i];
+         } else if (i==53) {
+          data53= visData[i];
+         } else if (i==54) {
+          data54= visData[i];
+         } else if (i==55) {
+          data55= visData[i];
+         } else if (i==56) {
+          data56= visData[i];
+         } else if (i==57) {
+          data57= visData[i];
+         } else if (i==58) {
+          data58= visData[i];
+         } else if (i==59) {
+          data59= visData[i];
+         } else if (i==60) {
+          data60= visData[i];
+         } else {
+          dat1a= [];
+        }
+
+        var newid = i;
+        var varname = "data"+newid;
+        var value = visData; // هنا المشكلة لان التنسيب اصبح عنصر من مصفوفة الى مصفوفة
+        // eval("data1= []");
+        // data1= visData[i];
+        eval("varname= value");
+        // console.log(typeof(varname));
+
+        // var arra= visData[i];
+        // console.log(arra);
+        // for (var j = 0; j < arra.length; j++) {
+        //   for (var k = 0; k < 2; k++) {
+        //     console.log(arra[j][k]);
+        //   }
+        // }
+        // console.log(visData[i]);
+        // console.log(eval("data"+i));
+      }
+      // console.log("--end--",);
+
+      addVisuCaseStudy1();
+    }
+    function remoVizTech (){
+      var contents = $('.vis-container');
+      var vizsNumber = contents.size();
+      var max = 400;
+      for (var i = 0; i < vizsNumber; i++)  {
+        $("#"+contents[i].id).resizable();
+        $("#"+contents[i].id).resizable('destroy');
+        d3.select("#"+contents[i].id).style("background-color", "transparent");
+        d3.select("#"+contents[i].id)
+          .selectAll("div")
+          .remove();
+        d3.select("svg").style("background", "transparent");
+        d3.select("svg")
+          .selectAll("circle")
+          .remove();
+        if (fixedLayoutStatus == false) {
+           $("#"+contents[i].id).resizable({
+            handles: "n, e, s, w, ne, nw, se, sw",
+            stop: function() {
+              var $el = $(this);
+              var pos = $el.position();
+              var widthStep= $("#panel").outerWidth(false) / 100;
+              var heightStep= $("#panel").outerHeight(false) / 100;
+              $(this).css({
+                 width: ( (Math.round($(this).outerWidth(false) / widthStep) * widthStep) / $("#panel").outerWidth(false)) * 100 + '%',
+                 height: ( (Math.round($(this).outerHeight(false) / heightStep) * heightStep) / $("#panel").outerHeight(false)) * 100 + '%',
+                 height: $(this).outerHeight(false) / $("#panel").outerHeight(false) * 100 + '%',
+                 left: ( (Math.round(pos.left / widthStep) * widthStep) / $("#panel").outerWidth(false) )  * 100 + '%',
+                 top: ( (Math.round(pos.top / heightStep) * heightStep) / $("#panel").outerHeight(false) )  * 100 + '%',
+              });
+              $(this).css({ zIndex: '3' });
+              $(this).css({boxShadow:"0px 0px 5px 0px #D27005 inset"});
+            }
+           });
+        }
+      }
+    }
+ </script>
+ <script type="text/javascript">// CaseStudy2
+  const years1 = ['1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003',
+                  '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013',
+  '2014', '2015', '2016', '2017', '2018'];
+  const value1 = [24.56457174, 24.93557582, 25.38100504, 26.70491919, 27.65580255, 26.53048699, 28.22786967, 27.34223973, 25.72159201, 27.18006744,
+               29.57183239, 30.83441386, 30.39231319, 29.97675923, 31.2176927, 29.18785581, 29.94609322, 29.84225543, 31.01064722, 29.94578701,
+  29.98328724, 31.22485353, 32.2058814, 32.06944384, 31.96344932];
+  const years2 = ['1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003',
+                                 '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013',
+  '2014', '2015', '2016', '2017', '2018']
+  const value2 = [0.552534487, 0.555, 0.573798, 1.15, 2.145041096, 2.502876712, 2.56568306, 2.385, 2.018, 1.304924,
+                              2.008469945, 1.874657534, 1.99260274, 2.083424658, 2.370136612, 2.371232877, 2.374520548, 2.600684932, 2.958333333, 3.029383562,
+  3.343041096, 4.029041096, 4.426516393, 4.440684932, 4.59769589];
+  const years3 = ['Q1 1994', 'Q2 1994', 'Q3 1994', 'Q4 1994',
+                   'Q1 1995', 'Q2 1995', 'Q3 1995', 'Q4 1995',
+                   'Q1 1996', 'Q2 1996', 'Q3 1996', 'Q4 1996',
+                   'Q1 1997', 'Q2 1997', 'Q3 1997', 'Q4 1997',
+                   'Q1 1998', 'Q2 1998', 'Q3 1998', 'Q4 1998',
+                   'Q1 1999', 'Q2 1999', 'Q3 1999', 'Q4 1999',
+                   'Q1 2000', 'Q2 2000', 'Q3 2000', 'Q4 2000',
+                   'Q1 2001', 'Q2 2001', 'Q3 2001', 'Q4 2001',
+                   'Q1 2002', 'Q2 2002', 'Q3 2002', 'Q4 2002',
+                   'Q1 2003', 'Q2 2003', 'Q3 2003', 'Q4 2003',
+                   'Q1 2004', 'Q2 2004', 'Q3 2004', 'Q4 2004',
+                   'Q1 2005', 'Q2 2005', 'Q3 2005', 'Q4 2005',
+                   'Q1 2006', 'Q2 2006', 'Q3 2006', 'Q4 2006',
+                   'Q1 2007', 'Q2 2007', 'Q3 2007', 'Q4 2007',
+                   'Q1 2008', 'Q2 2008', 'Q3 2008', 'Q4 2008',
+                   'Q1 2009', 'Q2 2009', 'Q3 2009', 'Q4 2009',
+                   'Q1 2010', 'Q2 2010', 'Q3 2010', 'Q4 2010',
+                   'Q1 2011', 'Q2 2011', 'Q3 2011', 'Q4 2011',
+                   'Q1 2012', 'Q2 2012', 'Q3 2012', 'Q4 2012',
+                   'Q1 2013', 'Q2 2013', 'Q3 2013', 'Q4 2013',
+                   'Q1 2014', 'Q2 2014', 'Q3 2014', 'Q4 2014',
+                   'Q1 2015', 'Q2 2015', 'Q3 2015', 'Q4 2015',
+                   'Q1 2016', 'Q2 2016', 'Q3 2016', 'Q4 2016',
+                   'Q1 2017', 'Q2 2017', 'Q3 2017', 'Q4 2017',
+                   'Q1 2018', 'Q2 2018', 'Q3 2018', 'Q4 2018',
+  'Q1 2019']
+  const value3 = [ 0.54500024, 0.55500024, 0.55500024, 0.55500024,
+                 0.555, 0.555, 0.555, 0.555,
+                 0.545248949, 0.545248949, 0.545248949, 0.658824521,
+                 1.093445358, 1.037684577, 1.241059752, 1.225360045,
+                 1.587777778, 2.047142857, 2.482608696, 2.449456522,
+                 2.524277778, 2.568131868, 2.833152174, 2.087119565,
+                 2.331098901, 2.756593407, 2.7925, 2.382065217,
+                 2.21941979, 2.274388528, 2.513454109, 2.527935706,
+                 2.450444444, 1.533626374, 1.715543478, 2.376521739,
+                 2.117940669, 0.262956837, 0.999845515, 1.845301525,
+                 2.102197802, 1.965934066, 2.030434783, 1.935869565,
+                 1.9, 1.9, 1.982608696, 1.716847826,
+                 1.765555556, 1.982417582, 2.183695652, 2.033695652,
+                 1.931111111, 2.067032967, 2.048369565, 2.283695652,
+                 2.298901099, 2.417032967, 2.424456522, 2.339891304,
+                 2.282777778, 2.383516484, 2.45, 2.366847826,
+                 2.415555556, 2.366483517, 2.316304348, 2.400543478,
+                 2.534444444, 2.533516484, 2.632608696, 2.7,
+                 2.635164835, 2.92967033, 3.148913044, 3.11576087,
+                 3.05, 3.091208791, 3.044293478, 2.933152174,
+                 3.262222222, 3.291758242, 3.284456522, 3.531413044,
+                 3.489444444, 3.965934066, 4.298913044, 4.349456522,
+                 4.285164835, 4.386043956, 4.426358696, 4.606521739,
+                 4.456166667, 4.438461539, 4.504619565, 4.363804348,
+                 4.459666667, 4.501208791, 4.659228261, 4.766630435,
+  4.776555556];
+
+  function CaseStudy2(divId1, divId2, divId3){
+    // console.log('CaseStudy2');
+    <!-- Crude Oil Production from OPEC- Annual from 1994 to 2018 -->
+    addBarChart(divId1, years1, value1, 'Crude Oil Production from OPEC- Annual from 1994 to 2018', 'Years', 'Average production Million barrels per day', '');
+    <!-- Crude Oil Production from Iraq- Annual from 1994 to 2018 -->
+    addBarChart(divId2, years2, value2, 'Crude Oil Production from Iraq- Annual from 1994 to 2018', 'Years', 'Average production Million barrels per day', '');
+    <!-- Crude Oil Production from Iraq- Quarterly from 1994 to Early 2019 -->
+    addBarChartQuarterly(divId3, years3, value3, 'Crude Oil Production from Iraq- Quarterly from 1994 to Early 2019', 'Years', 'Average production Million barrels per day', 'Source: U.S. Energy Information Administration');
+
+  }
+
+  function removeCaseStudy2(divId1, divId2, divId3){
+   $('#'+ divId1).html("");
+   $('#'+ divId1).css('background', 'transparent');
+   $('#'+ divId1).css('box-shadow', '0px 0px 5px 0px #ed7c36 inset');
+   $('#'+ divId2).html("");
+   $('#'+ divId2).css('background', 'transparent');
+   $('#'+ divId2).css('box-shadow', '0px 0px 5px 0px #ed7c36 inset');
+   $('#'+ divId3).html("");
+   $('#'+ divId3).css('background', 'transparent');
+   $('#'+ divId3).css('box-shadow', '0px 0px 5px 0px #ed7c36 inset');
+  }
+
+  function addBarChart(divId, years, value, visType,
+                      chartTitle, chartTitlePosX, chartTitlePosY, chartTitleSize, chartTitleColor,
+                      dataSource,
+                       xAxisTextSize, xAxisTextRotate, xAxisTitle, xAxisTitleSize, xAxisTitleColor,
+                       yAxisTextSize, yAxisTextRotate, yAxisTitle, yAxisTitleSize, yAxisTitleColor,
+                       barcolor, addBarTitles, barTitlesColor, barTitlesSize, interact, interactColor,
+                       visBackground, visBorder, visBoxshadow, margin,
+                       verticalGridLines, horizontalGridLines){
+   var svgIdNumber= divId.substring(3, divId.length);
+   var svgId= 'svg'+ svgIdNumber;
+   $('#'+ divId).html("");
+   $('#'+ divId).css('background', visBackground);
+   $('#'+ divId).css('border', visBorder);
+   $('#'+ divId).css('box-shadow', visBoxshadow);
+   d3.select("#"+ divId).append("svg")
+     .attr("width", (100 + "%"))
+     .attr("height", (100 + "%"))
+     .attr("id",svgId);
+   const svg = d3.select('#'+ svgId);
+   const svgviz1 = d3.select('#'+ divId);
+   // const margin = 40;     //  margin
+   const width = $('#'+ divId).outerWidth(false) - 2 * margin;     //  Visualisation width
+   const height = $('#'+ divId).outerHeight(false) - 2 * margin;   //  Visualisation height
+   const chart = svg.append('g')     //  apply margin
+     .attr('transform', `translate(${margin}, ${margin})`);
+   const xScale = d3.scaleBand()   //  Scale Bottom axis
+     .range([0, width])
+     .domain( years )
+     .padding(0.4)
+   var maxDomain= Math.ceil(Math.max(...value));
+   // console.log(maxDomain);
+   const yScale = d3.scaleLinear()     //   Scale Left axis
+     .range([height, 0])
+     .domain([0, maxDomain]);
+   const makeXLines = () => d3.axisBottom()      // vertical grid lines
+     .scale(xScale)
+   const makeYLines = () => d3.axisLeft()       // prepare horizontal grid lines
+     .scale(yScale)
+   chart.append('g')       // append Bottom axis
+     .attr('transform', `translate(0, ${height})`)
+     .call(d3.axisBottom(xScale))
+     .style('font-size', xAxisTextSize);
+   chart.append('g')       // append Left axis
+     .call(d3.axisLeft(yScale))
+     .style('font-size', yAxisTextSize);
+   if (verticalGridLines == "yes") {
+     chart.append('g')       // vertical grid lines
+       .attr('class', 'grid')
+       .attr('transform', `translate(0, ${height})`)
+       .call(makeXLines()
+         .tickSize(-height, 0, 0)
+         .tickFormat('')
+       )
+   }
+   if (horizontalGridLines == "yes") {
+     chart.append('g')      // horizontal grid lines
+       .attr('class', 'grid')
+       .call(makeYLines()
+         .tickSize(-width, 0, 0)
+         .tickFormat('')
+       )
+   }
+   var valueIndex=-1; // value arrea index
+   var j=-1;       // to control value arrea index
+   const y= 0 ;
+   var barY= 0;
+   const barGroups = chart.selectAll()   // create bars
+     .data(value)
+     .enter( )
+     .append('g')
+   barGroups
+       .append('rect')
+       .attr('class', 'bar')
+       .attr('x',    function (){
+                                  valueIndex= valueIndex+ 1;
+                                  if ((valueIndex+1) < years.length) {
+                                      return xScale(years[valueIndex]); valueIndex= -1;
+                                  } else if  ((valueIndex+1) == years.length) {
+                                      j= valueIndex; valueIndex= -1;
+                                      return xScale(years[j]);
+                                  }
+                                })
+       .attr('y', (g) => yScale(g))
+       .attr('height', (g) => height - yScale(g))
+       .attr('width', xScale.bandwidth())
+       .attr('fill', barcolor)
+       .on('mouseenter', function (actual, i) {       //  mouse enter
+         if (interact == "yes") {
+           d3.select(this)
+             .style('fill', interactColor)
+             .attr('opacity', 1)
+             .attr(this, function(d) { barY= yScale(d) })
+           const y =  barY
+           line = chart.append('line')
+             .attr('id', 'limit')
+             .style('stroke', interactColor)
+             .attr('x1', 0)
+             .attr('y1', y)
+             .attr('x2', width)
+             .attr('y2', y)
+           barGroups.append('text')
+             .attr('text-anchor', 'middle')
+         }
+       })
+       .on('mouseleave', function () {       //  mouse leave
+         if (interact == "yes") {
+           d3.select(this)
+             .style('fill', barcolor)
+             .transition()
+           chart.selectAll('#limit').remove()
+         }
+       })
+
+    // addBarTitles, barTitlesColor, barTitlesSize
+
+   // var textSizeInsideBars= '7px';     // numbers inside bars
+   if (addBarTitles == "yes") {
+     barGroups
+      .append('text')
+      .attr('class', 'value')
+      .style('font-size',barTitlesSize)
+      .style('fill', barTitlesColor)
+      .attr('x', function (){
+                                 valueIndex= valueIndex+ 1;
+                                 if ((valueIndex+1) < years.length) {
+                                     return xScale(years[valueIndex])+ xScale.bandwidth() / 2; valueIndex= -1;
+                                 } else if  ((valueIndex+1) == years.length) {
+                                     j= valueIndex; valueIndex= -1;
+                                     return xScale(years[j])+ xScale.bandwidth() / 2;
+                                 }
+                               })
+      .attr('y', function (){
+                                 valueIndex= valueIndex+ 1;
+                                 if ((valueIndex+1) < years.length) {
+                                     return yScale(value[valueIndex])- 2;
+                                 } else if  ((valueIndex+1) == years.length) {
+                                     j= valueIndex; valueIndex= -1;
+                                     return yScale(value[j])- 2;
+                                 }
+                               })
+      .attr('text-anchor', 'middle')
+      .text(function (){
+                                 valueIndex= valueIndex+ 1;
+                                 if ((valueIndex+1) < years.length) {
+                                     return parseFloat(value[valueIndex]).toFixed(2);
+                                 } else if  ((valueIndex+1) == years.length) {
+                                     j= valueIndex; valueIndex= -1;
+                                     return parseFloat(value[j]).toFixed(2);
+                                 }
+                               })
+
+   }
+
+
+   svg.append('text')
+     .attr('class', 'label')
+     .style('font-size',yAxisTitleSize)
+     .style('fill', yAxisTitleColor)
+     .attr('x', -(height / 2) - margin)
+     .attr('y', margin / 2.8)
+     .attr('transform', 'rotate(-90)')
+     .attr('text-anchor', 'middle')
+     .text(yAxisTitle)
+
+
+   svg.append('text')
+     .attr('class', 'label')
+     .style('font-size',xAxisTitleSize)
+     .style('fill', xAxisTitleColor)
+     .attr('x', width + margin * 1.5)
+     .attr('y', height + margin * 1.1)
+     .attr('transform', 'rotate(0)')
+     .attr('text-anchor', 'middle')
+     .text(xAxisTitle)
+
+     // chartTitle, chartTitlePosX, chartTitlePosY, chartTitleSize, chartTitleColor,
+     // dataSource,
+     //  xAxisTextSize, xAxisTextRotate, xAxisTitle, xAxistitleSize, xAxistitleColor,
+     //  yAxisTextSize, yAxisTextRotate, yAxisTitle, yAxistitleSize, yAxistitleColor,
+     //  barcolor, addBarTitles, barTitlesColor, barTitlesSize, interact, interactColor,
+     //  visBackground, visBorder, visBoxshadow, margin,
+     //  verticalGridLines, horizontalGridLines){
+
+   // var captionSize= '11px';   // Visualisation Caption
+   svg.append('text')
+     .attr('class', 'title')
+     .style('font-size',chartTitleSize)
+     .attr('x', width / 2 + margin)
+     .attr('y', 20)
+     .attr('text-anchor', 'middle')
+     .text(chartTitle)
+
+   var dataSourceTextSize= '8px';   // Data Source
+   svg.append('text')
+     .attr('class', 'source')
+     .style('font-size',dataSourceTextSize)
+     .attr('x', width - margin / 0.4)
+     .attr('y', 10)
+     .attr('text-anchor', 'start')
+     .text(dataSource)
+  }
+
+  function addBarChartQuarterly(divId, years, value, maxDomain, chartTitle, xAxisTitle, yAxisTitle, dataSource){
+   var svgIdNumber= divId.substring(3, divId.length);
+   var svgId= 'svg'+ svgIdNumber;
+   $('#'+ divId).html("");
+   $('#'+ divId).css('background', 'white');
+   $('#'+ divId).css('border', '0px groove green');
+   $('#'+ divId).css('box-shadow', '0px 0px 0px 0px red inset');
+   d3.select("#"+ divId).append("svg")
+     .attr("width", (100 + "%"))
+     .attr("height", (100 + "%"))
+     .attr("id",svgId);
+   const svg = d3.select('#'+ svgId);
+   const svgviz3 = d3.select('#'+ divId);
+   const margin = 40;   //  margin
+   const width = $('#'+ divId).outerWidth(false) - 2 * margin;   //  Visualisation width
+   const height = $('#'+ divId).outerHeight(false) - 2.5 * margin;   //  Visualisation height
+   const chart = svg.append('g')   //  apply margin
+     .attr('transform', `translate(${margin}, ${margin})`);
+   const xScale = d3.scaleBand()   //  Scale Bottom axis
+     .range([0, width])
+     .domain( years )
+     .padding(0.4)
+   const yScale = d3.scaleLinear()   //   Scale Left axis
+     .range([height, 0])
+     .domain([0, 5]);
+   const makeXLines = () => d3.axisBottom()   // vertical grid lines
+     .scale(xScale)
+   const makeYLines = () => d3.axisLeft()   // prepare horizontal grid lines
+     .scale(yScale)
+   chart.append('g')   // append Bottom axis
+     .attr('transform', `translate(0, ${height})`)
+     .call(d3.axisBottom(xScale))
+     .selectAll('text')
+     .style('font-size', '8px')
+     .style('text-anchor', 'start')
+     .attr('transform', 'rotate(60 0 10)');
+   chart.append('g')   // append Left axis
+     .style('font-size', '8px')
+     .call(d3.axisLeft(yScale));
+   chart.append('g')   // vertical grid lines
+     .attr('class', 'grid')
+     .attr('transform', `translate(0, ${height})`)
+     .call(makeXLines()
+       .tickSize(-height, 0, 0)
+       .tickFormat('')
+     )
+   chart.append('g')   // horizontal grid lines
+     .attr('class', 'grid')
+     .call(makeYLines()
+       .tickSize(-width, 0, 0)
+       .tickFormat('')
+     )
+   var valueIndex=-1; // value arrea index
+   var j=-1;       // to control value arrea index
+   const y= 0 ;
+   var barY= 0;
+   const barGroups = chart.selectAll()   // create bars
+     .data(value)
+     .enter( )
+     .append('g')
+   barGroups
+    .append('rect')
+    .attr('class', 'bar')
+    .attr('x',    function (){
+                               valueIndex= valueIndex+ 1;
+                                  if ((valueIndex+1) < years.length) {
+                                   return xScale(years[valueIndex]); valueIndex= -1;
+                               } else if  ((valueIndex+1) == years.length) {
+                                   j= valueIndex; valueIndex= -1;
+                                   return xScale(years[j]);
+                               }
+                             })
+    .attr('y', (g) => yScale(g))
+    .attr('height', (g) => height - yScale(g))
+    .attr('width', xScale.bandwidth())
+    .attr('fill', '#80cbc4')
+    .on('mouseenter', function (actual, i) {       //  mouse enter
+       d3.select(this)
+         .style('fill', 'pink')
+         .attr('opacity', 1)
+         .attr(this, function(d) { barY= yScale(d) })
+       const y =  barY
+       line = chart.append('line')
+         .attr('id', 'limit')
+         .attr('x1', 0)
+         .attr('y1', y)
+         .attr('x2', width)
+         .attr('y2', y)
+       barGroups.append('text')
+         .attr('text-anchor', 'middle')
+       })
+    .on('mouseleave', function () {       //  mouse leave
+       d3.select(this)
+         .style('fill', '#80cbc4')
+         .transition()
+       chart.selectAll('#limit').remove()
+    })
+   var axisYTitleSize= '10px';   // Y axis title
+   svg
+     .append('text')
+     .attr('class', 'label')
+     .style('font-size',axisYTitleSize)
+     .attr('x', -(height / 2) - margin)
+     .attr('y', margin / 2.8)
+     .attr('transform', 'rotate(-90)')
+     .attr('text-anchor', 'middle')
+     .text(yAxisTitle)
+   var axisXTitleSize= '10px';   // X axis title
+   svg.append('text')
+     .attr('class', 'label')
+     .style('font-size',axisXTitleSize)
+     .attr('x', width + margin * 1.5)
+     .attr('y', height + margin * 1.1)
+     .attr('text-anchor', 'middle')
+     .text(xAxisTitle)
+   var captionSize= '11px';   // Visualisation Caption
+   svg.append('text')
+     .attr('class', 'title')
+     .style('font-size',captionSize)
+     .attr('x', width / 2 + margin)
+     .attr('y', 20)
+     .attr('text-anchor', 'middle')
+     .text(chartTitle)
+   var dataSourceTextSize= '8px';     // Data Source
+   svg.append('text')
+       .attr('class', 'source')
+       .style('font-size',dataSourceTextSize)
+       .attr('x', width - margin / 0.4)
+       .attr('y', height + 90)
+       .attr('text-anchor', 'start')
+       .text(dataSource)
+  }
+ </script>
+ <script type="text/javascript">// CaseStudy3
+
+     var VisualJSON = '{	"visual": ['+
+       '{"visType": "barchart1",'+
+       '"caption": {"x":10, "y":12, "text":"Titles", "size":17, "color":"black"},'+
+   	  	'"xAxis": {"textSize":"7px", "textRotate":0, "titale":"Xaxis titale", "titleSize":"10px", "titleColor":"black"},'+
+   	  	'"yAxis": {"textSize":"10px", "textRotate":0, "titale":"Yaxis titale", "titleSize":"15px", "titleColor":"black"},'+
+   	  	'"bar": {"barcolor":"red", "addBarTitles":"yes", "barTitlesColor":"black", "barTitlesSize":"7px", "addInteract":"yes", "interactColor":"blue"},'+
+   	  	'"appear": {"verticalGridLines":"yes", "horizontalGridLines":"yes", "background":"white", "border":"0px groove green", "boxShadow":"0px 0px 5px 0px #ed7c36 inset", "margin":60 }}]}';
+
+  //                                      , xAxistitleSize, xAxistitleColor, xAxisTitalerotate
+  function creatVisualJsonNewLayot(){
+    var contents = $('.vis-container');
+    var vizsNumber = contents.size();
+    var VisualObj = JSON.parse(VisualJSON);
+
+    for (var i = 1; i < vizsNumber; i++)  {
+      var visNumber= i+ 1+ "";
+
+      if (i==1) {
+        var newVisual = {
+                    "visType":"barchart",
+                    "caption": {"x":10, "y":10, "text":"Titles", "size":17, "color":"black"},
+                    "xAxis": {"textSize":"7px", "textRotate":0, "titale":"Xaxis titale", "titleSize":"10px", "titleColor":"black"},
+                    "yAxis": {"textSize":"10px", "textRotate":0, "titale":"Yaxis titale", "titleSize":"15px", "titleColor":"black"},
+                    "bar": { "barcolor":"red", "addBarTitles":"yes", "barTitlesColor":"black", "barTitlesSize":"7px", "addInteract":"yes", "interactColor":"blue"},
+                    "appear": {"verticalGridLines":"yes", "horizontalGridLines":"yes", "background":"white", "border":"0px groove green", "boxShadow":"0px 0px 5px 0px #D27005 inset", "margin":40 }};
+      } else {
+        var newVisual = {
+                    "visType":"barchart",
+                    "caption": {"x":10, "y":10, "text":"Titles", "size":17, "color":"black"},
+                    "xAxis": {"textSize":"7px", "textRotate":0, "titale":"Xaxis titale", "titleSize":"10px", "titleColor":"black"},
+                    "yAxis": {"textSize":"10px", "textRotate":0, "titale":"Yaxis titale", "titleSize":"15px", "titleColor":"black"},
+                    "bar": { "barcolor":"red", "addBarTitles":"yes", "barTitlesColor":"black", "barTitlesSize":"7px", "addInteract":"yes", "interactColor":"blue"},
+                    "appear": {"verticalGridLines":"yes", "horizontalGridLines":"yes", "background":"white", "border":"0px groove green", "boxShadow":"0px 0px 5px 0px #D27005 inset", "margin":40 }};
+      }
+
+
+
+      newVisual.visType= newVisual.visType+ visNumber;
+      VisualObj['visual'].push(newVisual);
+      VisualJSON= JSON.stringify(VisualObj, null, 3);
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  function CaseStudy3(){
+
+    // var jSON = $('#editorvizTechJson').text();
+    // var obj = JSON.parse(jSON);
+    // $('#editorvizTechJson').text("");
+    // $('#editorvizTechJson').text(JSON.stringify(obj, null, 3));
+    // $('#editorvizTechJson').each(function(i, block) {
+    //    hljs.highlightBlock(block);
+    // });
+
+    var contents = $('.vis-container');
+    var vizsNumber = contents.size();
+    var VisualObj = JSON.parse(VisualJSON);
+
+    // for (var i = 1; i < vizsNumber; i++)  {
+    //   var visNumber= i+ 1+ "";
+    //   var newVisual = {
+    //                    "visType":"barchart",
+    //                    "caption": {"x":10, "y":10, "text":"caption", "size":10, "color":"black"},
+    //                    "xAxis": {"textSize":"6px", "textRotate":0, "titale":"Xaxis titale", "titleSize":"6px", "titleColor":"black"},
+    //                    "yAxis": {"textSize":"6px", "textRotate":0, "titale":"Yaxis titale", "titleSize":"6px", "titleColor":"black"},
+    //                    "bar": { "barcolor":"red", "addBarTitles":"yes", "barTitlesColor":"black", "barTitlesSize":"6px", "addInteract":"yes", "interactColor":"blue"},
+    //                    "appear": {"verticalGridLines":"yes", "horizontalGridLines":"yes", "background":"white", "border":"0px groove green", "boxShadow":"0px 0px 5px 0px #D27005 inset", "margin":40 }};
+    //   newVisual.visType= newVisual.visType+ visNumber;
+    //   VisualObj['visual'].push(newVisual);
+    // }
+
+    for (var i = 0; i < vizsNumber; i++)  {
+      contents[i].innerHTML="";
+      // Crude Oil Production from OPEC- Annual from 1994 to 2018
+    // VisualObj.visual[i].xAxis.titalerotate  VisualObj.visual[i].yAxis.titalerotate
+      addBarChart(contents[i].id, eval("years"+(i+1)), eval("value"+(i+1)), VisualObj.visual[i].visType,
+                                       VisualObj.visual[i].caption.text, VisualObj.visual[i].caption.x,VisualObj.visual[i].caption.y,VisualObj.visual[i].caption.size,VisualObj.visual[i].caption.color,
+                                        '',
+                                       VisualObj.visual[i].xAxis.textSize, VisualObj.visual[i].xAxis.textRotate, VisualObj.visual[i].xAxis.titale, VisualObj.visual[i].xAxis.titleSize, VisualObj.visual[i].xAxis.titleColor,
+                                       VisualObj.visual[i].yAxis.textSize, VisualObj.visual[i].yAxis.textRotate, VisualObj.visual[i].yAxis.titale, VisualObj.visual[i].yAxis.titleSize, VisualObj.visual[i].yAxis.titleColor,
+                                       VisualObj.visual[i].bar.barcolor,  VisualObj.visual[i].bar.addBarTitles, VisualObj.visual[i].bar.barTitlesColor,
+                                       VisualObj.visual[i].bar.barTitlesSize, VisualObj.visual[i].bar.addInteract, VisualObj.visual[i].bar.interactColor,
+                                       VisualObj.visual[i].appear.background, VisualObj.visual[i].appear.border, VisualObj.visual[i].appear.boxShadow,
+                                       VisualObj.visual[i].appear.margin, VisualObj.visual[i].appear.verticalGridLines, VisualObj.visual[i].appear.horizontalGridLines);
+    }
+
+    // console.log(VisualJSON);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  function UpdateVisualisation(){
+    removeCaseStudy2('viz1', 'viz2', 'viz3');
+    CaseStudy3();
+
+  }
+
+ </script>
+</head>
+<body>
+  <div class="container" id="secondScreen">
+   <div class="container menuDiv">
+    <ul id="drop-nav" class="drop-nav">
+      <li><a href="#">File</a>
+        <ul>
+          <li><a href="#">New File</a></li>
+          <li>
+            <a href="#">
+             <div class="myLabelSeconScr" id="openLayoutSeconScr">
+                <input type="file" id="fileToLoad"  onchange="loadFileAsText()">
+                <span id="openLayoutSeconScrSpan">Open File</span>
+              </div>
+            </a>
+          </li>
+          <li><a href="#" onclick="saveTextAsFile()">Save Layout</a></li>
+          <li><a href="#">Setting</a></li>
+          <li><a href="#">Close</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Edit</a>
+        <ul>
+          <li><a href="#">Undo</a></li>
+          <li><a href="#">Redo</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Visualization</a>
+        <ul>
+          <!-- <li><a href="#" onclick="RendViz()">Rendered Viz</a></li> -->
+          <li><a href="#">Add Data</a></li>
+      </ul>
+      </li>
+      <li><a href="#">View</a>
+        <ul>
+          <li><a href="#">Display</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Help</a>
+        <ul>
+          <li><a href="#">About Layout Editor</a></li>
+          <li><a href="#">Welcome Guide</a></li>
+        </ul>
+      </li>
+    </ul>
+    <span class="toolBar" id="addVis">Add View</span>
+
+
+    <!-- <span class="toolBar" onclick="addVizTech()">Add Visualization</span> -->
+
+
+
+
+    <span class="toolBar" onclick="CaseStudy3()">Add Visualization</span>
+
+
+
+
+    <span class="toolBar" onclick="UpdateVisualisation()">Update Visualization</span>
+
+    <span class="toolBar" onclick="removeCaseStudy2('viz1', 'viz2', 'viz3')">Remove Visualization</span>
+
+   </div>
+   <div class="container parent">
+     <div class="center container" id="grammarArea">   <!-- grammar Area -->
+        <div class="grammar-container"  id="grammarTools">
+          <p id="updTexEdi">Update TextEditor</p>
+          <br>
+          <span id="creatLay">Create Layout By</span>
+          <br>
+          <span><select id="creatLayList">
+            <option value="TextEditor" >Text Editor</option>
+            <option value="layTech">Shortcut Grammar</option>
+            <option value="grammar">Grammar</option>
+          </select></span><br>
+        </div>
+        <div id="tab" class="tab">
+           <button class="tablinks active" onclick="grammarTab(event, 'editor')">Layout Editor</button>
+           <button class="tablinks" onclick="grammarTab(event, 'layoutTech')">Shortcut Grammar</button>
+           <button class="tablinks" onclick="grammarTab(event, 'grammar')">Grammar</button>
+           <div id="editor" class="tabcontent">
+             <pre>
+               <code class="hljs json" id="editorVizsJson" contenteditable="true">
+                 {
+                   "numOfVizs": 1,
+                   "fixedLayout": "no",
+                   "laySize": {
+                       "height": "100%",
+                       "width": "100%"
+                   },
+                   "layout": {
+                       "id": [
+                         "viz1"
+                       ],
+                       "pos": [
+                         {
+                             "n": 0,
+                             "x": 7,
+                             "y": 7
+                         }
+                       ],
+                       "size": [
+                         {
+                             "n": 0,
+                             "w": 74,
+                             "h": 69
+                         }
+                       ],
+                       "data": [
+                         "data1"
+                       ],
+                       "vizTech": [
+                         "barchart-piechart-scatterplot-parallelcoordinates-timeline"
+                       ],
+                       "vizBGColor": [
+                         "transparent"
+                       ]
+                   },
+                   "backgroundColor": "white"
+                 }
+               </code>
+             </pre>
+           </div>
+           <div id="layoutTech" class="tabcontent">
+             <pre>
+               <code class="hljs json" id="editorTechJson" contenteditable="true">
+                 {
+                   "numOfVizs": 5,
+                   "layTech": "goldenratiov5q2s100%"
+                 }
+               </code>
+             </pre>
+           </div>
+           <div id="grammar" class="tabcontent">
+             <pre id="grammarEditor" contenteditable="true" >
+              <!-- v(75h(25,75v(50,50)),25) -->
+     a:50;
+     b:(a,a);
+     c:b;
+     d:b;
+     Expr:v(40h(25,75vb),20hb,20hc,20hd);
+              <!-- a:10;
+                   b:(a,a,a,a,a,a,a,a,a,a);
+                   c:b;
+                   d:b;
+                   Expr:v(40h(25,75vb),20hb,20hc,20hd); -->
+             </pre>
+           </div>
+        </div>
+     </div>
+     <div class="center container" id="layoutApperance">  <!-- layout Appearance -->
+       <div id="jstreeDiv">
+         <div id="jstree">  <!-- Dot.png -->
+           <ul class="treeAttr" >
+             <li class="treeAttr treeLayout"  id="tLayout" data-jstree='{"opened" : true, "selected" : true,  "icon":"VisB1.png"}'>Layout Appearance
+               <!-- <ul class="treeAttr" > -->
+                 <!-- <li  class="treeAttr tVis" id="tBasic" data-jstree='{ "selected":true, "icon":"LayoutIconBlue.png"}'>Basic</li> -->
+                 <!-- <li  class="treeAttr tVis" id="tAppear" data-jstree='{"icon":"LayoutIconBlue.png"}'>Appearance</li> -->
+               <!-- </ul> -->
+             </li>
+             <li class="treeAttr treeLayout" id="tLayComp"  data-jstree='{ "opened" : true, "disabled  " : false, "icon":"VisB2.png"}'>Layout Components
+               <ul class="treeAttr" >
+                 <li class="treeAttr tVis"  id="tVis1" data-jstree='{ "opened" : "true", "icon":"LayoutIconBlue.png"}'>Vis1
+                   <ul class="treeAttr" >
+                     <li class="treeAttr tVisData"  id="tVizData1" data-jstree='{"icon":"Dot.png"}'>Data</li>
+                     <li class="treeAttr tVisTech"  id="tVizTech1" data-jstree='{"icon":"Dot.png"}'>Visualisation</li>
+                     <!-- <li class="treeAttr tVizAppear"  id="tVizAppear1" data-jstree='{"icon":"Dot.png"}'>Appearance</li> -->
+                   </ul>
+                 </li>
+               </ul>
+             </li>
+           </ul>
+         </div>
+       </div>
+       <div id="layApperPart2"  class="tab">
+
+         <div id="tLayoutDiv" class="tabAppearcontent">
+           <!-- <br><br>
+           <label class="switch">
+             <input type="checkbox" id="basicFixedLayout" checked>
+             <span class="slider round"></span>
+           </label><span class="sliderName">Fixed Layout</span><br><br><br>
+
+           <p class="visTasTit">Layout Dimensions</p><br>
+           <input type="number" class="layoSize" id="basicLayotHieh" value="100"  min="1" max="100" required><span class="layoSizeWH">%  Hieght</span><br><br>
+           <input type="number" class="layoSize" id="basicLayotWidt" value="100"  min="1" max="100" required><span class="layoSizeWH">%  Width</span><br><br>
+           <br>
+           <p class="visTasTit">Panel BackGround:</p>
+           &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;<input type="text" id="appearPanelBG" value="#cdf5bc"><br><br><br>
+           <br>
+           <hr style="border:1px  e0dcd8;  width: 198px; background: #c1c1c1">
+           <span id="applyLayout"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Apply &nbsp; &nbsp;</span>
+           <span id="resetLayout">&nbsp; Reset</span> -->
+
+           <p id="treeTLayoutNumbP">Layout Appearance</p>
+           <div id="tLayoutDiv2" >
+             <pre id="preEditorTLayout">
+               <code class="hljs json" id="editorTLayout" contenteditable="true">
+                 {
+                    "apperance": {
+                                "backgroundColor": "white",
+                                "horizontalLine": "yes",
+                                "verticalLine": "yes",
+                                "border": "0px solid  black",
+                                <!-- "border-radius": "0px 0px 0px 0px", -->
+                                "boxShadow": "0px 0px 0px 0px black inset",
+                                <!-- "margin": "0px 0px 0px0. 0px", -->
+                                "padding": "0px 0px 0px 0px"
+                    }
+                 }
+               </code>
+             </pre>
+
+           </div>
+           <br>
+           <span id="applyTLayout"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Apply &nbsp; &nbsp; </span>
+           <span id="resetTLayout" style="color: black;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Reset</span>
+
+
+
+         </div>
+
+
+         <div id="vizData" class="tabAppearcontent">
+           <div class="myLabelViewData" id="choosDataFile"> &nbsp;Viz<span id="treeDataVizNumb">1</span>>
+             <input type="file" id="fileToLoadVisData" onchange="loadVisDataFile()" accept=".csv">
+             <span id="choosDataFileSpan" style="color: black;">Choose_data_file</span>
+           </div>
+           <br>
+           <div id="vizDataDiv" >
+           <pre id="vizDataPre" contenteditable="true" >
+   OR, paste data here..
+           </pre>
+           </div>
+           <br>
+           <span id="applyData"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Apply &nbsp; &nbsp; </span>
+           <span id="erasedatafile" style="color: black;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Erase Data</span>
+         </div>
+         <div id="vizTech" class="tabAppearcontent">
+
+           <p id="treeVizTechNumbP" > &nbsp;Viz<span id="treeVizTechNumb">1</span>>Visualisation</p>
+           <div id="vizTechDiv" >
+             <pre id="preEditorvizTech">
+               <code class="hljs json" id="editorvizTechJson" contenteditable="true">
+                 {
+                     "visual": [{
+                      "visType": "barchart",
+                      "caption": {
+                        "x": 10,
+                        "y": 10,
+                        "text": "caption",
+                        "size": 10,
+                        "color": "black"
+                      },
+                      "xAxis": {
+                        "textSize": "6px",
+                        "textRotate": 0,
+                        "titale": "Xaxis titale",
+                        "titleSize": "6px",
+                        "titleColor": "black"
+                      },
+                      "yAxis": {
+                        "textSize": "6px",
+                        "textRotate": 0,
+                        "titale": "Yaxis titale",
+                        "titleSize": "6px",
+                        "titleColor": "black"
+                      },
+                      "bar": {
+                        "barcolor": "red",
+                        "addBarTitles": "yes",
+                        "barTitlesColor": "black",
+                        "barTitlesSize": "6px",
+                        "addInteract": "yes",
+                        "interactColor": "blue"
+                      },
+                      "appear": {
+                        "verticalGridLines": "yes",
+                        "horizontalGridLines": "yes",
+                        "background": "white",
+                        "border": "0px groove green",
+                        "boxShadow": "0px 0px 5px 0px #ed7c36 inset",
+                        "margin": 60
+                      }
+                    }]
+                  }
+               </code>
+             </pre>
+
+           </div>
+           <br>
+           <span id="applyTech"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Apply &nbsp; &nbsp; </span>
+           <span id="resetTech" style="color: black;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Reset</span>
+
+         </div>
+         <!-- <div id="vizAppear" class="tabAppearcontent">&nbsp; &nbsp;Components>appearance</div> -->
+       </div>
+     </div> <!-- End layoutApperance -->
+     <div class="center container" id="panelAreaBG"> <!-- panelArea-BackGround -->
+       <div class="center container" id="panelArea"> <!-- panelArea -->
+         <div class="center container" id="panel"></div>  <!-- Panel -->
+       </div>
+     </div>
+     <!-- End panel -->
+   </div>
+   <!-- <div class="clear"></div> -->
+  </div>
+  <div class="container parent" id="firstScreen">
+    <div class="center container" id="openLayoutArea">
+      <br>
+      <p id="creaVisLab">Create Visualisation</p>
+      <div class="myLabelFirsScr" id="openLayoutFirsScr">
+        <input type="file" id="fileToLoadFS" onchange="loadFileAsTextFirstScr()" >
+        <span id="openLayoutFirsScrSpan">Open Layout</span>
+      </div>
+      <br><br><br>
+      <p onclick="newLayoInSecoScre()" id="creatNewLayo">Create New Layout</p><br>
+      <!-- <hr style="border:1px groove white; width:  198px;"><br> -->
+      <label class="switch">
+        <input type="checkbox" id="fixedLayout" checked>
+        <span class="slider round"></span>
+      </label><span class="sliderName">Fixed Layout</span><br>
+      <hr style="border:1px groove white; width: 198px;">
+      <p id="filtLayos">Filtering the Layouts</p><br>        <!-- Rounded switch -->
+      <p class="visTasTit">Visualization Tasks</p>
+      <select id="visTasList">
+        <option value="allLayouts" >All Tasks</option>
+        <option value="exploration">Exploration</option>
+        <option value="explanation">Explanation</option>
+        <option value="comparison">Comparison</option>
+      </select><br><br>
+      <p class="visTasTit">Views Attributes</p>
+      <select id="viewTypList">
+        <option value="allViews" >All Types</option>
+        <option value="timeLine">Time Line</option>
+        <option value="square">Square</option>
+      </select><br><br>
+      <p class="visTasTit">Number of View(s)</p>
+      <select id="numofViewList">
+        <option value="unspecified">Unspecified</option>
+        <option value="1View">1</option>
+        <option value="2View">2</option>
+        <option value="3View">3</option>
+        <option value="4View">4</option>
+        <option value="5View">5</option>
+        <option value="6View">6</option>
+        <option value="7View">7</option>
+        <option value="8View">8</option>
+        <option value="9View">9</option>
+      </select><br><br>
+      <p class="visTasTit">Layout Dimensions</p>
+      <input type="number" class="layoSize" id="layotHieh" value="100"  min="1" max="100" required><span class="layoSizeWH">%  Hieght</span><br>
+      <input type="number" class="layoSize" id="layotWidt" value="100"  min="1" max="100" required><span class="layoSizeWH">%  Width</span><br><br>
+      <hr style="border:1px groove white; width: 198px;">
+
+      <div id="quickFindArea">
+        <span class="categoriesLabel">Quick Find:</span><br/><br/>
+        <span class="categories" id="exploration">Exploration</span><br/>
+        <span class="categories" id="explanation">Explanation</span><br/>
+        <span class="categories" id="comparison">Comparison</span><br/>
+        <span class="categories" id="timeLine">Time Line</span><br/>
+        <span class="categories" id="square">Square</span><br/>
+        <span class="categories" id="1View">One View</span><br/>
+        <span class="categories" id="2View">Two View</span><br/>
+        <span class="categories" id="3View">Three View</span><br/>
+        <span class="categories" id="allLayouts">All Layouts</span><br/>
+      </div>
+
+    </div>
+    <div class="center container" id="newLayoutArea">
+     <!-- <div id="quickFindArea">
+       <span class="categoriesLabel">Quick Find:</span>
+       <span class="categories" id="exploration">Exploration</span>
+       <span class="categories" id="explanation">Explanation</span>
+       <span class="categories" id="comparison">Comparison</span>
+       <span class="categories" id="timeLine">Time Line</span>
+       <span class="categories" id="square">Square</span>
+       <span class="categories" id="1View">One View</span>
+       <span class="categories" id="2View">Two View</span>
+       <span class="categories" id="3View">Three View</span>
+       <span class="categories" id="allLayouts">All Layouts</span>
+       <br/>
+       <br/>
+     </div> -->
+     <!-- <br/>
+     <br/> -->
+     <div class="center container" id="newLayoutAreaCode">
+     </div>
+    </div>
+  </div>
+</body>
+</html>
